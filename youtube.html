@@ -1,27 +1,22 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" /> <!-- Đặt mã ký tự là UTF-8 để hỗ trợ tiếng Việt -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <!-- Responsive -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>YouTube</title>
-  <link rel="stylesheet" href="youtube.css">
+   <link href="youtube.css" rel="stylesheet"/>
 </head>
 <body>
 
 <div class="main">
-  <!-- Khu vực hàng chờ video -->
   <div class="queue-section">
     <div class="top-buttons">
       <button onclick="prevVideo()">⏮️ Quay về</button>
       <button onclick="resetAll()">🏠 Trang chủ</button>
       <button onclick="nextVideo()">⏭️ Tiếp theo</button>
     </div>
-
-    <!-- Nhập video đầu tiên -->
     <input type="text" id="firstVideo" placeholder="🔗 Nhập video đầu tiên..." />
     <button onclick="startFirstVideo()">Bắt đầu</button>
-
-    <!-- Khu vực thêm video tiếp theo -->
     <div id="addSection" style="display: none;">
       <input type="text" id="videoInput" placeholder="➕ Thêm video tiếp theo..." />
       <div style="display: flex; gap: 6px; margin-top: 4px;">
@@ -30,20 +25,15 @@
         <button onclick="clearInput()">❌ Xóa link</button>
       </div>
     </div>
-
-    <!-- Danh sách hàng chờ -->
     <div class="scrollable">
       <ul id="queueList"></ul>
     </div>
   </div>
-
-  <!-- Khu vực phát video -->
   <div class="video-section">
     <div id="playerContainer"></div>
   </div>
 </div>
 
-<!-- Thêm thư viện kéo-thả SortableJS -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script src="youtube.js"></script>
 </body>
