@@ -13,10 +13,15 @@
       transition: all 0.3s ease;
       position: relative;
     }
-     
-    .queue-section.show {
-      transform: translateX(0);
+      .queue-section {
+      width: 5%;
+      min-width: 200px;
+      background: #1e293b;
+      padding: 5px;
+      display: flex;
+      flex-direction: column;
     }
+    
     .video-section {
       flex: 1;
       padding: 10px;
@@ -35,7 +40,7 @@
       border: none;
     }
     button {
-      padding: 8px;
+      padding: 4px;
       font-size: 14px;
       margin: 4px;
       border: none;
@@ -47,9 +52,9 @@
     .top-buttons {
       display: flex;
       justify-content: center;
-      gap: 10px;
+      gap: 1px;
       flex-wrap: nowrap;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
     .scrollable {
       flex: 1;
@@ -75,7 +80,7 @@
     }
     .delete-btn {
       margin-top: 5px;
-      padding: 4px 8px;
+      padding: 2px 4px;
       font-size: 12px;
       background: #f87171;
       color: white;
@@ -88,13 +93,13 @@
     }
     #menuToggleBtn {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 5px;
+      left: 5px;
       background: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 3px;
       padding: 6px 10px;
-      font-size: 24px;
+      font-size: 16px;
       cursor: pointer;
       z-index: 999;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
