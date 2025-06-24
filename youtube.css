@@ -1,0 +1,95 @@
+   /* Cài đặt mặc định */
+   * { box-sizing: border-box; }
+   html, body {
+     margin: 0;
+     height: 100%;
+     overflow: hidden;
+     font-family: Arial, sans-serif;
+     background: #0f172a;
+     color: #f8fafc;
+   }
+   /* Chia layout chính thành 2 cột */
+   .main {
+     display: flex;
+     height: 100%;
+   }
+   /* Bên trái: danh sách phát */
+   .queue-section {
+     width: 5%;
+     min-width: 200px;
+     background: #1e293b;
+     padding: 5px;
+     display: flex;
+     flex-direction: column;
+   }
+   /* Bên phải: phát video */
+   .video-section {
+     flex: 1;
+     padding: 10px;
+     display: flex;
+     flex-direction: column;
+   }
+     #playerContainer {
+     flex: 1;
+   }
+   /* Input và button */
+   input[type="text"] {
+     padding: 8px;
+     margin-bottom: 8px;
+     font-size: 14px;
+     border-radius: 6px;
+     border: none;
+   }
+   button {
+     padding: 8px;
+     font-size: 14px;
+     margin: 4px;
+     border: none;
+     border-radius: 6px;
+     background-color: #38bdf8;
+     color: #0f172a;
+     cursor: pointer;
+   }
+     .top-buttons {
+     display: flex;
+     justify-content: center;
+     gap: 10px;         /* Khoảng cách giữa các nút */
+     flex-wrap: nowrap; /* Không cho xuống hàng */
+     margin-bottom: 8px;
+     }
+   /* Danh sách có thể cuộn */
+   .scrollable {
+     flex: 1;
+     overflow-y: auto;
+     border-top: 1px solid #334155;
+     padding-top: 8px;
+   }
+   ul {
+     list-style: none;
+     padding: 0;
+     margin: 0;
+   }
+   li {
+     background: #334155;
+     margin-bottom: 6px;
+     padding: 8px;
+     border-radius: 6px;
+     font-size: 13px;
+   }
+   li a {
+     color: #38bdf8;
+     text-decoration: none;
+   }
+   .delete-btn {
+     margin-top: 5px;
+     padding: 4px 8px;
+     font-size: 12px;
+     background: #f87171;
+     color: white;
+   }
+   iframe {
+     width: 100%;
+     height: 100%;
+     border: none;
+     border-radius: 12px;
+   }
