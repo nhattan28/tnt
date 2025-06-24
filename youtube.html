@@ -17,15 +17,14 @@
     </div>
     <input type="text" id="firstVideo" placeholder="🔗 Nhập video đầu tiên..." />
     <button onclick="startFirstVideo()">Bắt đầu</button>
-    <div id="addSection" style="display: none;">
-      <input type="text" id="videoInput" placeholder="➕ Thêm video tiếp theo..." />
-      <div style="display: flex; gap: 6px; margin-top: 4px;">
-        <button onclick="addVideo()">Thêm</button>
-        <button onclick="pasteAndAdd()">🗌 Dán</button>
-        <button onclick="clearInput()">❌ Xóa link</button>
-      </div>
-    </div>
-    <div class="scrollable">
+   <div id="addSection" style="display: none;">
+  <input type="text" id="videoInput" placeholder="➕ Thêm video tiếp theo..." />
+  <div class="button-group">
+    <button onclick="addVideo()">➕ Thêm</button>
+    <button onclick="pasteAndAdd()">📋 Dán</button>
+  </div>
+</div>      
+      <div class="scrollable">
       <ul id="queueList"></ul>
     </div>
   </div>
