@@ -137,7 +137,23 @@ tag.src = "https://www.youtube.com/iframe_api";
 document.head.appendChild(tag);
 
 function onPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.ENDED) nextVideo();
+  if (event.data === YT.PlayerState.ENDED) {
+  // Xoá video hiện tại
+  if (currentIndex >= 0 && currentIndex < videoQueue.length) {
+    videoQueue.splice(currentIndex, 1);
+    // Điều chỉnh chỉ số sau khi xóa
+    if (currentIndex >= videoQueue.length) {
+      currentIndex = videoQueue.length - 1;
+    }
+    if (currentIndex >= 0) {
+      playVideo(videoQueue[currentIndex]);
+    } else {
+      document.getElementById("playerContainer").innerHTML = "";
+    }
+    updateQueueDisplay();
+  }
+}
+
 }
 
 function toggleMenu() {
