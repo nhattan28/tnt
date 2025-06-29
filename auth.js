@@ -10,7 +10,7 @@ function generateRandomPassword(length = 28) {
 function setPasswordExpiration() {
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
   const password = generateRandomPassword();
-  const expirationTime = new Date(Date.now() + 4 * 60 * 60 * 1000); // 4 hours in milliseconds
+  const expirationTime = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours in milliseconds
   
   localStorage.setItem(`authPassword_${currentPage}`, password);
   localStorage.setItem(`authExpiration_${currentPage}`, expirationTime.getTime());
@@ -33,23 +33,19 @@ function setPasswordExpiration() {
   });
 }
 
-// Thêm hệ thống mật khẩu vĩnh viễn
-const PERMANENT_PASSWORD = '2810203'; // Mật khẩu vĩnh viễn cố định
+const PERMANENT_PASSWORD = '203';
 
 function setPermanentPassword() {
-  // Lưu mật khẩu vĩnh viễn cho tất cả trang
   localStorage.setItem('authPassword_permanent', PERMANENT_PASSWORD);
-  
-  // Định nghĩa biến toàn cục cho mã 2810203 để xem mật khẩu vĩnh viễn
   let permanentCodeSet = false;
   Object.defineProperty(window, 'TânPermanent', {
     set: function (value) {
       if ((value === '2810203' || value === 2810203) && !permanentCodeSet) {
-        console.log(`Mật khẩu vĩnh viễn cho tất cả trang: ${PERMANENT_PASSWORD}`);
-        console.log('Mật khẩu này không bao giờ hết hạn và dùng chung cho mọi trang.');
+        console.log(`  ${PERMANENT_PASSWORD}`);
+        console.log(' ');
         permanentCodeSet = true;
       } else if (!permanentCodeSet) {
-        console.log('Mã không đúng cho mật khẩu vĩnh viễn!');
+        console.log('Mã không đúng');
       }
     },
     get: function () {
