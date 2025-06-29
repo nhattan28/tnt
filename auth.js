@@ -10,7 +10,7 @@ function generateRandomPassword(length = 10) {
 function setPasswordExpiration() {
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
   const password = generateRandomPassword();
-  const expirationTime = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours in milliseconds
+  const expirationTime = new Date(Date.now() + 12 * 60 * 60 * 1000); // 12 hours in milliseconds
   
   localStorage.setItem(`authPassword_${currentPage}`, password);
   localStorage.setItem(`authExpiration_${currentPage}`, expirationTime.getTime());
