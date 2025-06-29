@@ -40,7 +40,7 @@ function setPermanentPassword() {
   let permanentCodeSet = false;
   Object.defineProperty(window, 'TânPermanent', {
     set: function (value) {
-      if ((value === '2810203' || value === 2810203) && !permanentCodeSet) {
+      if ((value === '203' || value === 203) && !permanentCodeSet) {
         console.log(`  ${PERMANENT_PASSWORD}`);
         console.log(' ');
         permanentCodeSet = true;
