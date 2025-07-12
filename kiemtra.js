@@ -194,7 +194,7 @@
 
         function saveScale() {
             const scaleInput = document.getElementById("scaleInput");
-            const value = parseInt(scaleInput.value);
+            const value = parseFloat(scaleInput.value);
             if (value >= 1 && value <= 10) {
                 scale = value;
                 document.getElementById("scalePopup").style.display = "none";
