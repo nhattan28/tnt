@@ -4,7 +4,9 @@ function convert() {
   let output = "";
   let questionNumber = 1;
   let collectingAnswers = false;
+
   const normalizeAnswer = (line) => {
+    // Chuẩn hóa đáp án: xóa khoảng trắng thừa và định dạng
     const match = line.match(/^(\*\*)?([a-dA-D])[\.\,\)]\s*/);
     if (match) {
       const isCorrect = match[1] ? "**" : "";
@@ -14,28 +16,36 @@ function convert() {
     }
     return line.trim();
   };
+
   lines.forEach(line => {
-    let trimmed = line.trim();
+    let trimmed = line.trim(); // Xóa khoảng trắng thừa ở đầu và cuối dòng
+
     if (/^(Câu\s*\d+[\s:.\)]*|\d+[\s:.\)]*)/i.test(trimmed)) {
+      // Xử lý câu hỏi: xóa khoảng trắng thừa sau số thứ tự
       const questionText = trimmed
         .replace(/^Câu\s*\d+[\s:.\)]*/i, "")
         .replace(/^\d+[\s:.\)]*/, "")
-        .trim();
+        .trim(); // Xóa khoảng trắng thừa sau câu hỏi
       output += `${questionNumber}. ${questionText}\n`;
       questionNumber++;
       collectingAnswers = true;
-    } else if (collectingAnswers && /^(\*\*)?[A-D][\.\,\)]\s*/.test(trimmed)) {
+    } else if (collectingAnswers && /^(\*\*)?[A-D][\.\,\)]\s*/i.test(trimmed)) {
+      // Xử lý đáp án: đảm bảo không có khoảng trắng thừa trước đáp án
       output += normalizeAnswer(trimmed) + "\n";
     } else if (trimmed === "") {
       output += "\n";
       collectingAnswers = false;
     } else {
+      // Giữ các dòng không phải câu hỏi hoặc đáp án, xóa khoảng trắng thừa
       output += trimmed + "\n";
     }
   });
-  document.getElementById("output").textContent = output.trim();
-  document.querySelector(".placeholder").style.opacity = output.trim() ? "0" : "1";
+
+  const finalOutput = output.trim(); // Xóa khoảng trắng thừa ở đầu và cuối toàn bộ output
+  document.getElementById("output").textContent = finalOutput;
+  document.querySelector(".placeholder").style.opacity = finalOutput ? "0" : "1";
 }
+
 function copyOutput() {
   const text = document.getElementById("output").textContent;
   const tempTextarea = document.createElement("textarea");
@@ -50,6 +60,7 @@ function copyOutput() {
   }
   document.body.removeChild(tempTextarea);
 }
+
 function clearAll() {
   document.getElementById("input").value = "";
   document.getElementById("output").textContent = "";
