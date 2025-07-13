@@ -53,8 +53,6 @@ const toggleWrongBtn = document.getElementById("toggleWrongBtn");
 const correctContainer = document.getElementById("correctAnswersContainer");
 const correctSection = document.getElementById("correctAnswersSection");
 const toggleCorrectBtn = document.getElementById("toggleCorrectBtn");
-const violationsSection = document.getElementById("violations");
-const toggleViolationsBtn = document.getElementById("toggleViolationsBtn");
 
 if (wrongAnswers.length === 0) {
   wrongSection.style.display = "none";
@@ -112,16 +110,6 @@ toggleCorrectBtn.addEventListener("click", function() {
   }
 });
 
-toggleViolationsBtn.addEventListener("click", function() {
-  if (violationsSection.style.display === "none") {
-    violationsSection.style.display = "block";
-    toggleViolationsBtn.textContent = "Ẩn vi phạm";
-  } else {
-    violationsSection.style.display = "none";
-    toggleViolationsBtn.textContent = "Hiển thị vi phạm";
-  }
-});
-
 function triggerFireworks() {
   for (let i = 0; i < 100; i++) setTimeout(() => createFirework(), i * 50);
 }
@@ -166,50 +154,61 @@ function goBack() {
   window.location.href = "index.html";
 }
 
-let violations = JSON.parse(sessionStorage.getItem('violations')) || [];
-let fileUploads = JSON.parse(sessionStorage.getItem('fileUploads')) || [];
-
-function displayViolations() {
-  const violationList = document.getElementById('violation-list');
-  if (violations.length === 0) {
-    violationList.innerHTML = '<li class="text-gray-600">Không có vi phạm nào.</li>';
-  } else {
-    violationList.innerHTML = violations.map(v => `<li>${v.message} (Thời gian: ${v.time})</li>`).join('');
-  }
+// Function to show violation warning
+function showViolationWarning(message, backgroundColor, duration) {
+  const warning = document.createElement("div");
+  warning.className = "violation-warning";
+  warning.style.backgroundColor = backgroundColor;
+  warning.textContent = message;
+  document.body.appendChild(warning);
+  setTimeout(() => {
+    warning.remove();
+  }, duration);
 }
 
-function displayFileUploads() {
-  const fileUploadList = document.getElementById('file-upload-list');
-  if (fileUploads.length === 0 && fileName === "Unknown") {
-    fileUploadList.innerHTML = '<li class="text-gray-600">Không có file nào được tải lên.</li>';
-  } else {
-    const currentFile = fileUploads.find(f => f.file === fileName) || { file: fileName, time: new Date().toLocaleString('vi-VN') };
-    fileUploadList.innerHTML = `<li>File: ${currentFile.file} (Thời gian: ${currentFile.time})</li>`;
-  }
-}
-
-// Chặn chuột phải
+// Block right-click
 document.addEventListener('contextmenu', (e) => {
   e.preventDefault();
-  // Để hiển thị cảnh báo "lêu lêu" mà không dùng alert gây cản trở,
-  // bạn có thể thêm một dòng ghi log vào console hoặc hiển thị một div tùy chỉnh trên trang
-  console.log("Lêu lêu! Không được click chuột phải đâu nhé!");
+  showViolationWarning("Lêu lêu! Không được click chuột phải đâu nhé!", '#ef4444', 3000);
 });
 
-// Chặn F12 và các phím tắt công cụ phát triển
+// Block F12 and developer tool shortcuts
 document.addEventListener('keydown', (e) => {
+  // Block F12
+  if (e.key === 'F12' || e.keyCode === 123) {
+    e.preventDefault();
+    e.stopPropagation();
+    showViolationWarning("Lêu lêu! Không được mở công cụ phát triển đâu nhé!", '#ef4444', 3000);
+    return false;
+  }
+  // Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S, Ctrl+T, Ctrl+P
   if (e.ctrlKey || e.metaKey) {
-    if (['c', 'u', 's', 'p', 't'].includes(e.key.toLowerCase()) || (e.shiftKey && e.key === 'I') || e.key === 'F12') {
+    if (['i', 'I', 'j', 'J', 'c', 'C', 'u', 'U', 's', 'S', 't', 'T', 'p', 'P'].includes(e.key) || 
+        (e.ctrlKey && e.shiftKey && ['i', 'I', 'j', 'J', 'c', 'C'].includes(e.key))) {
       e.preventDefault();
-      // Để hiển thị cảnh báo "lêu lêu" mà không dùng alert gây cản trở,
-      // bạn có thể thêm một dòng ghi log vào console hoặc hiển thị một div tùy chỉnh trên trang
-      console.log("Lêu lêu! Không được mở công cụ phát triển đâu nhé!");
+      e.stopPropagation();
+      showViolationWarning("Lêu lêu! Không được mở công cụ phát triển đâu nhé!", '#ef4444', 3000);
+      return false;
     }
   }
 });
 
+// Additional protection for macOS-specific shortcuts (Cmd+Opt+I, Cmd+Opt+J, Cmd+Shift+C)
+document.addEventListener('keydown', (e) => {
+  if (e.metaKey && e.altKey && ['i', 'I', 'j', 'J'].includes(e.key)) {
+    e.preventDefault();
+    e.stopPropagation();
+    showViolationWarning("Lêu lêu! Không được mở công cụ phát triển đâu nhé!", '#ef4444', 3000);
+    return false;
+  }
+  if (e.metaKey && e.shiftKey && ['c', 'C'].includes(e.key)) {
+    e.preventDefault();
+    e.stopPropagation();
+    showViolationWarning("Lêu lêu! Không được mở công cụ phát triển đâu nhé!", '#ef4444', 3000);
+    return false;
+  }
+});
+
 window.onload = function() {
-  displayViolations();
-  displayFileUploads();
-  // updateRetryInfo(); // Hàm này không có trong code ban đầu, nếu cần hãy thêm định nghĩa
+  // Removed violation and file upload display logic to match original ketqua.html
 };
