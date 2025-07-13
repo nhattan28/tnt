@@ -19,15 +19,6 @@
         localStorage.setItem("retryData", JSON.stringify(retryData));
       }
 
-      // Update retry count and scores display
-      function updateRetryInfo() {
-        document.getElementById("retryCount").textContent = `Làm lại lần: ${retryData[fileName].attempts}`;
-        const scores = retryData[fileName].scores;
-        const highestScore = scores.length ? Math.max(...scores) : 0;
-        const lowestScore = scores.length ? Math.min(...scores) : 0;
-        document.getElementById("scoreStats").textContent = `Điểm cao nhất: ${highestScore.toFixed(1)} | Điểm thấp nhất: ${lowestScore.toFixed(1)}`;
-      }
-
       const scoreValue = parseFloat(score);
       const formattedScore = scoreValue % 1 === 0 ? scoreValue.toFixed(0) : scoreValue.toFixed(1);
       document.getElementById("score").textContent = `${formattedScore}/${scale}`;
