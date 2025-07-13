@@ -296,7 +296,6 @@ function nextQuestion() {
 function updateProgress() {
     document.getElementById("progressBar").textContent = `${current} / ${rawQuestions.length} câu đã làm`;
 }
-
 function showResult() {
     quizStarted = false;
     let correct = 0;
@@ -328,6 +327,11 @@ function showResult() {
     localStorage.setItem("quizWrongAnswers", JSON.stringify(wrongAnswers));
     localStorage.setItem("quizCorrectAnswers", JSON.stringify(correctAnswers));
     localStorage.setItem("quizScale", scale);
+    
+    // Đảm bảo dòng này được đặt TRƯỚC khi chuyển hướng
+    // `userAnswers.filter(answer => answer !== undefined && answer !== null).length`
+    // sẽ đếm số câu người dùng đã thực sự trả lời.
+    localStorage.setItem("quizAnsweredCount", userAnswers.filter(answer => answer !== undefined && answer !== null).length); //
 
     userAnswers = [];
     current = 0;
@@ -336,7 +340,7 @@ function showResult() {
     sessionStorage.removeItem('violations');
 
     document.getElementById("extraButtons").style.display = "flex";
-    window.location.href = "ketqua.html";
+    window.location.href = "ketqua.html"; //
 }
 
 function restartQuiz() {
