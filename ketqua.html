@@ -142,6 +142,20 @@
         background: linear-gradient(to right, #34d399, #2563eb);
       }
 
+      .violation-warning {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 15px 30px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        z-index: 1000;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        background-color: #ef4444;
+      }
+
       @media (max-width: 640px) {
         .container {
           width: 98%;
@@ -189,7 +203,8 @@
             <tr>
               <th>Thời gian làm</th>
               <th>Điểm</th>
-              <th>Số câu đã làm</th> <th>Số câu đúng</th>
+              <th>Số câu đã làm</th> 
+              <th>Số câu đúng</th>
               <th>Số câu sai</th>
               <th>Tổng số câu</th>
             </tr>
@@ -198,7 +213,8 @@
             <tr>
               <td id="time"></td>
               <td id="score"></td>
-              <td id="answeredCount"></td> <td id="correct"></td>
+              <td id="answeredCount"></td> 
+              <td id="correct"></td>
               <td id="wrong"></td>
               <td id="total"></td>
             </tr>
@@ -211,7 +227,6 @@
       <div class="toggle-buttons">
         <button id="toggleWrongBtn">Hiển thị câu sai</button>
         <button id="toggleCorrectBtn">Hiển thị câu đúng</button>
-
       </div>
 
       <div id="wrongAnswersSection" class="mt-8" style="display: none;">
