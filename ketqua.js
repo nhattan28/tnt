@@ -7,6 +7,7 @@
       const scale = localStorage.getItem("quizScale") || 10;
       const violation = localStorage.getItem("quizViolation");
       const fileName = localStorage.getItem("currentFileName") || "Unknown";
+      const answeredCount = localStorage.getItem("quizAnsweredCount");
 
       // Initialize retry data and save current score
       let retryData = JSON.parse(localStorage.getItem("retryData")) || {};
@@ -34,6 +35,7 @@
       document.getElementById("total").textContent = total;
       document.getElementById("time").textContent = time;
       document.getElementById("wrong").textContent = total - correct;
+      document.getElementById("answeredCount").textContent = answeredCount;
 
       const motivationalMessage = document.getElementById("motivationalMessage");
       const scorePercentage = (parseFloat(score) / parseFloat(scale)) * 10;
