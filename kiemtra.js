@@ -46,12 +46,14 @@ window.onload = function() {
         if (rawQuestions.length > 0) {
             document.getElementById("upload").style.display = "none";
             document.getElementById("clearFileBtn").style.display = "inline-block";
-            document.getElementById("usageGuide").classList.remove("show");
+            // document.getElementById("usageGuide").classList.remove("show"); // REMOVED
             document.getElementById("startQuiz").style.display = "block";
         } else {
-            document.getElementById("usageGuide").classList.add("show");
+            // document.getElementById("usageGuide").classList.add("show"); // REMOVED
         }
     }
+
+    showUsageGuidePopup(); // Call the popup on page load
 
     document.getElementById("upload").addEventListener("change", function(event) {
         const reader = new FileReader();
@@ -75,7 +77,7 @@ window.onload = function() {
                     document.getElementById("upload").style.display = "none";
                     document.getElementById("clearFileBtn").style.display = "inline-block";
                     document.getElementById("startQuiz").style.display = "block";
-                    document.getElementById("usageGuide").classList.remove("show");
+                    // document.getElementById("usageGuide").classList.remove("show"); // REMOVED
                     showSettingsPopup(); // Show the combined settings popup
                     const fileUploads = JSON.parse(sessionStorage.getItem('fileUploads')) || [];
                     fileUploads.push({
@@ -508,7 +510,7 @@ function showPopup(message, confirm = false, onOkCallback = closePopup) {
     const messageDiv = document.getElementById("popupMessage");
     const buttons = document.getElementById("popupButtons");
 
-    messageDiv.textContent = message;
+    messageDiv.innerHTML = message; // Changed to innerHTML to allow HTML content
     overlay.style.display = "block"; // Ensure overlay is shown for generic popups
     popup.style.display = "block";
     document.querySelector(".container").classList.add("blur"); // Blur background
@@ -584,7 +586,7 @@ function clearQuizState() {
     document.getElementById("upload").style.display = "block";
     document.getElementById("clearFileBtn").style.display = "none";
     document.getElementById("extraButtons").style.display = "flex";
-    document.getElementById("usageGuide").classList.add("show");
+    // document.getElementById("usageGuide").classList.add("show"); // REMOVED
     closePopup(); // Ensure all popups are closed
 }
 
@@ -665,3 +667,22 @@ window.addEventListener('beforeunload', function(e) {
         sessionStorage.clear();
     }
 });
+
+function showUsageGuidePopup() {
+const usageGuideContent = `
+<div class="text-center">
+<h3 class="text-xl font-bold mb-4 text-gray-800">📘 Hướng dẫn sử dụng</h3>
+ <ul class="list-disc pl-5 text-left text-gray-700 space-y-2 inline-block text-start">
+<li><strong>✨ Định dạng file:</strong> Đáp án đúng cần <strong>in đậm</strong> trong file Word (.docx).</li>
+<li><strong>❓ Định dạng câu hỏi:</strong> Bắt đầu bằng số (ví dụ: <code>1.</code> hoặc <code>1)</code>).</li>
+ <li><strong>✅ Định dạng đáp án:</strong> Bắt đầu bằng chữ cái (ví dụ: <code>a.</code>, <code>a)</code>, <code>A.</code>, hoặc <code>A)</code>).</li>
+<li><strong>⚙️ Chuẩn hóa:</strong> Nếu file của bạn không đúng định dạng, hãy nhấn nút "Chuẩn hóa câu hỏi".</li>
+ <li><strong>📊 Cài đặt bài thi:</strong> Sau khi tải file, bạn có thể chọn thang điểm và thời gian.</li>
+<li><strong>🚀 Bắt đầu:</strong> Nhấn "Xác nhận" để bắt đầu bài thi.</li>
+<li><strong>💡 Mẹo:</strong> Thanh thời gian sẽ chuyển màu khi gần hết giờ.</li>
+<li><strong>🚫 Chống gian lận:</strong> Hệ thống có thể tự động nộp bài nếu phát hiện gian lận.</li>
+</ul>
+</div>
+ `;
+showPopup(usageGuideContent, false);
+}
