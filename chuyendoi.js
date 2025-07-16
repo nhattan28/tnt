@@ -1,12 +1,23 @@
 function convert() {
   const inputText = document.getElementById("input").value;
-  const lines = inputText.split("\n");
+
+  const rawLines = inputText.split("\n");
+  const lines = [];
+
+  rawLines.forEach(line => {
+    const splitLine = line.split(/(?=(\*\*)?[a-dA-D][\.\,\)]\s)/g) || [];
+    splitLine.forEach(part => {
+      if (typeof part === "string" && part.trim?.()) {
+        lines.push(part.trim());
+      }
+    });
+  });
+
   let output = "";
   let questionNumber = 1;
   let collectingAnswers = false;
 
   const normalizeAnswer = (line) => {
-    // Chuẩn hóa đáp án: xóa khoảng trắng thừa và định dạng
     const match = line.match(/^(\*\*)?([a-dA-D])[\.\,\)]\s*/);
     if (match) {
       const isCorrect = match[1] ? "**" : "";
@@ -18,30 +29,27 @@ function convert() {
   };
 
   lines.forEach(line => {
-    let trimmed = line.trim(); // Xóa khoảng trắng thừa ở đầu và cuối dòng
+    let trimmed = line.trim();
 
     if (/^(Câu\s*\d+[\s:.\)]*|\d+[\s:.\)]*)/i.test(trimmed)) {
-      // Xử lý câu hỏi: xóa khoảng trắng thừa sau số thứ tự
       const questionText = trimmed
         .replace(/^Câu\s*\d+[\s:.\)]*/i, "")
         .replace(/^\d+[\s:.\)]*/, "")
-        .trim(); // Xóa khoảng trắng thừa sau câu hỏi
+        .trim();
       output += `${questionNumber}. ${questionText}\n`;
       questionNumber++;
       collectingAnswers = true;
     } else if (collectingAnswers && /^(\*\*)?[A-D][\.\,\)]\s*/i.test(trimmed)) {
-      // Xử lý đáp án: đảm bảo không có khoảng trắng thừa trước đáp án
       output += normalizeAnswer(trimmed) + "\n";
     } else if (trimmed === "") {
       output += "\n";
       collectingAnswers = false;
     } else {
-      // Giữ các dòng không phải câu hỏi hoặc đáp án, xóa khoảng trắng thừa
       output += trimmed + "\n";
     }
   });
 
-  const finalOutput = output.trim(); // Xóa khoảng trắng thừa ở đầu và cuối toàn bộ output
+  const finalOutput = output.trim();
   document.getElementById("output").textContent = finalOutput;
   document.querySelector(".placeholder").style.opacity = finalOutput ? "0" : "1";
 }
@@ -65,4 +73,13 @@ function clearAll() {
   document.getElementById("input").value = "";
   document.getElementById("output").textContent = "";
   document.querySelector(".placeholder").style.opacity = "1";
+}
+
+async function pasteInput() {
+  try {
+    const text = await navigator.clipboard.readText();
+    document.getElementById("input").value = text;
+  } catch (err) {
+    alert("❌ Không thể dán. Trình duyệt không hỗ trợ hoặc bạn chưa cho phép.");
+  }
 }
