@@ -1,16 +1,60 @@
 function convert() {
   const inputText = document.getElementById("input").value;
-
   const rawLines = inputText.split("\n");
-  const lines = [];
+
+  const mergedLines = [];
+  let buffer = "";
 
   rawLines.forEach(line => {
-    const splitLine = line.split(/(?=(\*\*)?[a-dA-D][\.\,\)]\s)/g) || [];
-    splitLine.forEach(part => {
-      if (typeof part === "string" && part.trim?.()) {
-        lines.push(part.trim());
+    const trimmed = line.trim();
+
+    // ⚠️ Nếu là dòng chỉ chứa "a)", "b)",... → không phải đáp án mới, mà là dòng phụ → gộp vào dòng trước
+    if (/^[a-dA-D][\.\,\)]\s*$/.test(trimmed)) {
+      buffer += " " + trimmed;
+      return;
+    }
+
+    // Nếu là đáp án mới (a. / b) / C. ...)
+    if (/^(\*\*)?[a-dA-D][\.\,\)]\s+/.test(trimmed)) {
+      if (buffer) mergedLines.push(buffer.trim());
+      buffer = trimmed;
+    }
+    // Nếu là dòng bắt đầu bằng "Câu" hoặc số thứ tự → câu hỏi mới
+    else if (/^(Câu\s*\d+[\s:.\)]*|\d+[\s:.\)]*)/i.test(trimmed)) {
+      if (buffer) mergedLines.push(buffer.trim());
+      buffer = trimmed;
+    }
+    // Nếu dòng trắng → xuống dòng thực sự
+    else if (trimmed === "") {
+      if (buffer) mergedLines.push(buffer.trim());
+      buffer = "";
+      mergedLines.push("");
+    }
+    // Dòng phụ → gộp tiếp
+    else {
+      buffer += " " + trimmed;
+    }
+  });
+
+  if (buffer) mergedLines.push(buffer.trim());
+
+  const lines = [];
+
+  mergedLines.forEach(line => {
+    const answerPattern = /((\*\*)?[a-dA-D][\.\,\)])\s+/g;
+    const answerMatches = [...line.matchAll(answerPattern)];
+
+    if (answerMatches.length >= 2) {
+      const parts = line.split(/(?=(\*\*)?[a-dA-D][\.\,\)]\s)/g).filter(Boolean);
+      const allValid = parts.every(p => /^(\*\*)?[a-dA-D][\.\,\)]\s/.test(p));
+      if (allValid) {
+        parts.forEach(p => lines.push(p.trim()));
+      } else {
+        lines.push(line.trim());
       }
-    });
+    } else {
+      lines.push(line.trim());
+    }
   });
 
   let output = "";
@@ -29,7 +73,7 @@ function convert() {
   };
 
   lines.forEach(line => {
-    let trimmed = line.trim();
+    const trimmed = line.trim();
 
     if (/^(Câu\s*\d+[\s:.\)]*|\d+[\s:.\)]*)/i.test(trimmed)) {
       const questionText = trimmed
@@ -39,7 +83,7 @@ function convert() {
       output += `${questionNumber}. ${questionText}\n`;
       questionNumber++;
       collectingAnswers = true;
-    } else if (collectingAnswers && /^(\*\*)?[A-D][\.\,\)]\s*/i.test(trimmed)) {
+    } else if (collectingAnswers && /^(\*\*)?[a-dA-D][\.\,\)]\s*/.test(trimmed)) {
       output += normalizeAnswer(trimmed) + "\n";
     } else if (trimmed === "") {
       output += "\n";
