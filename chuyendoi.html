@@ -8,8 +8,6 @@
   <style>
     body {
       font-family: 'Inter', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
       background: linear-gradient(135deg, #6ee7b7, #3b82f6, #8b5cf6, #ec4899);
       background-size: 400% 400%;
       animation: gradientFlow 12s ease infinite;
@@ -19,6 +17,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      margin: 0;
+      padding: 0;
     }
 
     @keyframes gradientFlow {
@@ -36,11 +36,6 @@
       border-radius: 1rem;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       backdrop-filter: blur(10px);
-      transition: transform 0.3s ease;
-    }
-
-    .container:hover {
-      transform: translateY(-5px);
     }
 
     h2 {
@@ -49,7 +44,6 @@
       font-size: 2rem;
       font-weight: 700;
       margin-bottom: 1.5rem;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     textarea, pre {
@@ -58,7 +52,6 @@
       font-size: 1rem;
       border: 2px solid #e5e7eb;
       border-radius: 0.5rem;
-      box-sizing: border-box;
       font-family: inherit;
     }
 
@@ -67,12 +60,6 @@
       resize: vertical;
       margin-bottom: 1.5rem;
       background: #f9fafb;
-      transition: border-color 0.3s ease;
-    }
-
-    textarea:focus {
-      border-color: #8b5cf6;
-      outline: none;
     }
 
     .output-wrapper {
@@ -84,8 +71,6 @@
       background: #f3f4f6;
       white-space: pre-wrap;
       min-height: 200px;
-      border-radius: 0.5rem;
-      padding: 1rem;
     }
 
     .placeholder {
@@ -119,34 +104,11 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     button:hover {
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    @media (min-width: 640px) {
-      .container {
-        width: 90%;
-        padding: 2.5rem;
-      }
-      h2 {
-        font-size: 2.5rem;
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .container {
-        width: 80%;
-      }
-    }
-
-    @media (min-width: 1280px) {
-      .container {
-        width: 70%;
-      }
     }
   </style>
 </head>
@@ -156,6 +118,7 @@
     <textarea id="input" placeholder="Dán nội dung ở đây..."></textarea>
 
     <div class="buttons">
+      <button onclick="pasteInput()">📥 Dán</button>
       <button onclick="convert()">🔄 Chuyển đổi</button>
       <button onclick="copyOutput()">📋 Copy kết quả</button>
       <button onclick="clearAll()">❌ Xóa nội dung</button>
@@ -167,6 +130,6 @@
       <div class="placeholder">Kết quả</div>
     </div>
   </div>
-   <script src="chuyendoi.js"></script>
+  <script src="chuyendoi.js"></script>
 </body>
 </html>
