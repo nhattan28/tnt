@@ -7,7 +7,13 @@ const correctAnswers = JSON.parse(localStorage.getItem("quizCorrectAnswers") || 
 const scale = localStorage.getItem("quizScale") || 10;
 const violation = localStorage.getItem("quizViolation");
 const fileName = localStorage.getItem("currentFileName") || "Unknown";
-const answeredCount = localStorage.getItem("quizAnsweredCount"); // This is the value causing the issue if set incorrectly elsewhere
+
+// Retrieve answeredCount, then validate it against total.
+// This ensures "Số câu đã làm" never exceeds "Tổng số câu" on the display.
+let answeredCount = localStorage.getItem("quizAnsweredCount");
+if (parseInt(answeredCount) > parseInt(total)) {
+  answeredCount = total; // Cap answeredCount at total if it's somehow higher
+}
 
 // Initialize retry data and save current score
 let retryData = JSON.parse(localStorage.getItem("retryData")) || {};
@@ -27,7 +33,7 @@ document.getElementById("correct").textContent = correct;
 document.getElementById("total").textContent = total;
 document.getElementById("time").textContent = time;
 document.getElementById("wrong").textContent = total - correct;
-document.getElementById("answeredCount").textContent = answeredCount; // Displays the value retrieved from local storage
+document.getElementById("answeredCount").textContent = answeredCount; // Now displays the validated count
 
 // Set motivational message based on score
 const motivationalMessage = document.getElementById("motivationalMessage");
@@ -142,14 +148,16 @@ function scrollToBottom() {
 }
 
 // Navigation functions
+// These functions use localStorage to manage quiz state for restarting or going back.
 function restartQuiz() {
   retryData[fileName].attempts += 1;
   localStorage.setItem("retryData", JSON.stringify(retryData));
-  localStorage.setItem("restartQuiz", "true");
+  localStorage.setItem("restartQuiz", "true"); // Signal to the quiz page to restart
   window.location.href = "kiemtra.html";
 }
 
 function goBack() {
+  // Clear all quiz-related data from local storage when going back to the main page
   localStorage.removeItem("quizQuestions");
   localStorage.removeItem("currentFileName");
   localStorage.removeItem("quizScore");
@@ -159,12 +167,12 @@ function goBack() {
   localStorage.removeItem("quizWrongAnswers");
   localStorage.removeItem("quizCorrectAnswers");
   localStorage.removeItem("quizScale");
-  localStorage.removeItem("retryData");
+  localStorage.removeItem("retryData"); // Consider if you want to clear retryData here or keep it for statistics
   localStorage.removeItem("restartQuiz");
   window.location.href = "index.html";
 }
 
-// Function to show violation warning
+// Function to show violation warning (for anti-cheating measures)
 function showViolationWarning(message, backgroundColor, duration) {
   const warning = document.createElement("div");
   warning.className = "violation-warning";
@@ -176,13 +184,12 @@ function showViolationWarning(message, backgroundColor, duration) {
   }, duration);
 }
 
-// Block right-click
+// Anti-cheating measures: Blocking developer tools and right-click
 document.addEventListener('contextmenu', (e) => {
   e.preventDefault();
   showViolationWarning("Lêu lêu! Không được click chuột phải đâu nhé!", '#ef4444', 3000);
 });
 
-// Block F12 and developer tool shortcuts
 document.addEventListener('keydown', (e) => {
   // Block F12
   if (e.key === 'F12' || e.keyCode === 123) {
@@ -191,8 +198,8 @@ document.addEventListener('keydown', (e) => {
     showViolationWarning("Lêu lêu! Không được mở công cụ phát triển đâu nhé!", '#ef4444', 3000);
     return false;
   }
-  // Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S, Ctrl+T, Ctrl+P
-  if (e.ctrlKey || e.metaKey) {
+  // Block common developer tool shortcuts (Ctrl+Shift+I, J, C, U, S, T, P)
+  if (e.ctrlKey || e.metaKey) { // metaKey for Cmd on macOS
     if (['i', 'I', 'j', 'J', 'c', 'C', 'u', 'U', 's', 'S', 't', 'T', 'p', 'P'].includes(e.key) ||
         (e.ctrlKey && e.shiftKey && ['i', 'I', 'j', 'J', 'c', 'C'].includes(e.key))) {
       e.preventDefault();
@@ -219,8 +226,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// This window.onload function was empty and commented out in your original code.
-// No functionality has been added here as per the original.
+// window.onload is currently empty based on your original code
 window.onload = function() {
-  // Removed violation and file upload display logic to match original ketqua.html
+  // Any setup or initial actions after the page fully loads can go here.
 };
