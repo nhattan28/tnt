@@ -226,26 +226,27 @@
               height: 100vh;
               z-index: 9999;
           }
-.popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 1.5rem;
-    border-radius: 1rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    z-index: 100000; /* Tăng z-index của popup lên cao hơn overlay */
-    text-align: center;
-    max-width: 90%; /* Giữ max-width để rộng rãi */
-    width: 400px; /* Thử đặt một chiều rộng cố định hoặc tăng nhẹ */
-    max-height: 90vh; /* Tăng max-height lên 90% chiều cao viewport */
-    overflow-y: auto; /* Rất quan trọng: Thêm thanh cuộn dọc khi nội dung vượt quá */
-    transition: transform 0.3s ease;
-    box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
-}
-
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 100000; /* Tăng z-index của popup lên cao hơn overlay */
+            text-align: center;
+            max-width: 95%; /* Giữ max-width để rộng rãi */
+            width: 800px; /* Thử đặt một chiều rộng cố định hoặc tăng nhẹ */
+            max-height: 90vh; /* Tăng max-height lên 90% chiều cao viewport */
+            overflow-y: auto; /* Rất quan trọng: Thêm thanh cuộn dọc khi nội dung vượt quá */
+            transition: transform 0.3s ease;
+            box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
+        }
+        
        .overlay {
         display: none;
         position: fixed;
