@@ -7,7 +7,7 @@ const correctAnswers = JSON.parse(localStorage.getItem("quizCorrectAnswers") || 
 const scale = localStorage.getItem("quizScale") || 10;
 const violation = localStorage.getItem("quizViolation");
 const fileName = localStorage.getItem("currentFileName") || "Unknown";
-const answeredCount = localStorage.getItem("quizAnsweredCount");
+const answeredCount = localStorage.getItem("quizAnsweredCount"); // This is the value causing the issue if set incorrectly elsewhere
 
 // Initialize retry data and save current score
 let retryData = JSON.parse(localStorage.getItem("retryData")) || {};
@@ -19,6 +19,7 @@ if (score) {
   localStorage.setItem("retryData", JSON.stringify(retryData));
 }
 
+// Display core results
 const scoreValue = parseFloat(score);
 const formattedScore = scoreValue % 1 === 0 ? scoreValue.toFixed(0) : scoreValue.toFixed(1);
 document.getElementById("score").textContent = `${formattedScore}/${scale}`;
@@ -26,8 +27,9 @@ document.getElementById("correct").textContent = correct;
 document.getElementById("total").textContent = total;
 document.getElementById("time").textContent = time;
 document.getElementById("wrong").textContent = total - correct;
-document.getElementById("answeredCount").textContent = answeredCount;
+document.getElementById("answeredCount").textContent = answeredCount; // Displays the value retrieved from local storage
 
+// Set motivational message based on score
 const motivationalMessage = document.getElementById("motivationalMessage");
 const scorePercentage = (parseFloat(score) / parseFloat(scale)) * 10;
 let message = "";
@@ -40,6 +42,7 @@ else message = "🚀 Đừng nản! Ôn tập lại, lần sau bạn sẽ làm t
 motivationalMessage.classList.remove("hidden");
 motivationalMessage.textContent = message;
 
+// Display violation notice if present
 if (violation) {
   const notice = document.getElementById("violationNotice");
   notice.classList.remove("hidden");
@@ -47,6 +50,7 @@ if (violation) {
   localStorage.removeItem("quizViolation");
 }
 
+// References for answer sections and toggle buttons
 const wrongContainer = document.getElementById("wrongAnswersContainer");
 const wrongSection = document.getElementById("wrongAnswersSection");
 const toggleWrongBtn = document.getElementById("toggleWrongBtn");
@@ -54,12 +58,13 @@ const correctContainer = document.getElementById("correctAnswersContainer");
 const correctSection = document.getElementById("correctAnswersSection");
 const toggleCorrectBtn = document.getElementById("toggleCorrectBtn");
 
+// Handle wrong answers display
 if (wrongAnswers.length === 0) {
   wrongSection.style.display = "none";
   document.getElementById("perfectMessage").classList.remove("hidden");
   triggerFireworks();
 } else {
-  wrongSection.style.display = "none";
+  wrongSection.style.display = "none"; // Initially hidden
 }
 
 wrongAnswers.forEach((item) => {
@@ -73,10 +78,11 @@ wrongAnswers.forEach((item) => {
   wrongContainer.appendChild(div);
 });
 
+// Handle correct answers display
 if (correctAnswers.length === 0) {
   correctSection.style.display = "none";
 } else {
-  correctSection.style.display = "none";
+  correctSection.style.display = "none"; // Initially hidden
 }
 
 correctAnswers.forEach((item) => {
@@ -90,6 +96,7 @@ correctAnswers.forEach((item) => {
   correctContainer.appendChild(div);
 });
 
+// Event listeners for toggle buttons
 toggleWrongBtn.addEventListener("click", function() {
   if (wrongSection.style.display === "none") {
     wrongSection.style.display = "block";
@@ -110,6 +117,7 @@ toggleCorrectBtn.addEventListener("click", function() {
   }
 });
 
+// Fireworks effect for perfect score
 function triggerFireworks() {
   for (let i = 0; i < 100; i++) setTimeout(() => createFirework(), i * 50);
 }
@@ -124,6 +132,7 @@ function createFirework() {
   setTimeout(() => f.remove(), 1200);
 }
 
+// Scroll functions
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -132,6 +141,7 @@ function scrollToBottom() {
   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
+// Navigation functions
 function restartQuiz() {
   retryData[fileName].attempts += 1;
   localStorage.setItem("retryData", JSON.stringify(retryData));
@@ -183,7 +193,7 @@ document.addEventListener('keydown', (e) => {
   }
   // Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S, Ctrl+T, Ctrl+P
   if (e.ctrlKey || e.metaKey) {
-    if (['i', 'I', 'j', 'J', 'c', 'C', 'u', 'U', 's', 'S', 't', 'T', 'p', 'P'].includes(e.key) || 
+    if (['i', 'I', 'j', 'J', 'c', 'C', 'u', 'U', 's', 'S', 't', 'T', 'p', 'P'].includes(e.key) ||
         (e.ctrlKey && e.shiftKey && ['i', 'I', 'j', 'J', 'c', 'C'].includes(e.key))) {
       e.preventDefault();
       e.stopPropagation();
@@ -209,6 +219,8 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+// This window.onload function was empty and commented out in your original code.
+// No functionality has been added here as per the original.
 window.onload = function() {
   // Removed violation and file upload display logic to match original ketqua.html
 };
