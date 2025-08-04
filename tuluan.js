@@ -11,69 +11,42 @@ let totalTimeSeconds = 0;
 let quizStarted = false;
 let violationCount = 0;
 let isSubmitting = false;
-let violationTimeout = null; // Biến để lưu trữ timeout của thông báo vi phạm
 
-// Hàm hiển thị modal tùy chỉnh cho các thông báo vi phạm
-function showViolationModal(title, message) {
-  const modal = document.getElementById('genericModal');
-  if (!modal) {
-    console.error('Modal element not found. Please add a modal with id="genericModal" to your HTML.');
-    return;
+// HÀM MỚI: Hiển thị thông báo vi phạm toàn màn hình
+function displayFullScreenNotification(message, backgroundColorClass) {
+  // Tạo hoặc tìm overlay container
+  let overlayContainer = document.getElementById('full-screen-overlay-container');
+  if (!overlayContainer) {
+    overlayContainer = document.createElement('div');
+    overlayContainer.id = 'full-screen-overlay-container';
+    document.body.appendChild(overlayContainer);
   }
-  
-  // Xóa timeout cũ nếu có
-  if (violationTimeout) {
-    clearTimeout(violationTimeout);
-  }
-  
-  const modalTitle = document.getElementById('modalTitle');
-  const modalMessage = document.getElementById('modalMessage');
-  const modalButtons = document.getElementById('modalButtons');
-  
-  modalTitle.textContent = title;
-  modalMessage.textContent = message;
-  modalButtons.innerHTML = ''; // Loại bỏ các nút
-  
-  modal.classList.remove('hidden');
 
-  // Đặt timeout để tự động ẩn modal sau 2 giây
-  violationTimeout = setTimeout(() => {
-    if (modal && !modal.classList.contains('hidden')) {
-      modal.classList.add('hidden');
+  // Xóa overlay cũ nếu có
+  overlayContainer.innerHTML = '';
+
+  // Tạo overlay mới
+  const overlay = document.createElement('div');
+  overlay.className = `fullscreen-overlay ${backgroundColorClass}`;
+  
+  const messageText = document.createElement('h1');
+  messageText.textContent = message;
+  
+  overlay.appendChild(messageText);
+  overlayContainer.appendChild(overlay);
+
+  // Hiển thị overlay
+  setTimeout(() => {
+    overlay.classList.add('show');
+  }, 50);
+
+  // Tự động ẩn overlay sau 2 giây
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    if (overlayContainer && !overlay.classList.contains('show')) {
+      overlayContainer.innerHTML = ''; // Xóa hẳn overlay khỏi DOM
     }
-  }, 2000);
-}
-
-// Hàm hiển thị modal có nút xác nhận (ví dụ: Nộp bài)
-function showConfirmModal(title, message, onConfirm = null) {
-  const modal = document.getElementById('genericModal');
-  if (!modal) {
-    console.error('Modal element not found. Please add a modal with id="genericModal" to your HTML.');
-    return;
-  }
-  
-  if (violationTimeout) {
-    clearTimeout(violationTimeout);
-  }
-
-  const modalTitle = document.getElementById('modalTitle');
-  const modalMessage = document.getElementById('modalMessage');
-  const modalButtons = document.getElementById('modalButtons');
-  
-  modalTitle.textContent = title;
-  modalMessage.textContent = message;
-  modalButtons.innerHTML = '';
-
-  const confirmButton = document.createElement('button');
-  confirmButton.textContent = 'Nộp bài';
-  confirmButton.classList.add('confirm-button');
-  confirmButton.onclick = () => {
-    modal.classList.add('hidden');
-    if (onConfirm) onConfirm();
-  };
-  modalButtons.appendChild(confirmButton);
-  
-  modal.classList.remove('hidden');
+  }, 2000); // 2 giây
 }
 
 
@@ -85,7 +58,7 @@ function handleFileAndStartExam(file) {
     mammoth.convertToHtml({ arrayBuffer }).then(function(result) {
       sessionStorage.setItem('lastExamContent', result.value);
       parseQuestions(result.value);
-    }).catch(() => showViolationModal("❌ Lỗi đọc file.", "Không thể đọc file. Vui lòng kiểm tra lại định dạng file Word (.docx)."));
+    }).catch(() => alert("❌ Lỗi đọc file.", "Không thể đọc file. Vui lòng kiểm tra lại định dạng file Word (.docx)."));
   };
   reader.readAsArrayBuffer(file);
 }
@@ -94,7 +67,7 @@ async function startExam() {
   const fileInput = document.getElementById('wordFile');
   const file = fileInput.files[0];
   if (!file) {
-    showViolationModal('Vui lòng chọn file', 'Bạn cần chọn một file Word để bắt đầu bài kiểm tra.');
+    alert('Vui lòng chọn một file Word (.docx) để bắt đầu.');
     return;
   }
 
@@ -102,7 +75,7 @@ async function startExam() {
   userAnswers = [];
   correctAnswers = [];
   elapsedSeconds = 0;
-  violationCount = 0;
+  violationCount = 0; // ĐẶT LẠI BIẾN ĐẾM KHI BẮT ĐẦU BÀI MỚI
   isSubmitting = false;
   if (timer) clearInterval(timer);
   
@@ -112,7 +85,7 @@ async function startExam() {
     timeLimitSeconds = parseInt(timeInput) * 60;
     totalTimeSeconds = timeLimitSeconds;
     if (isNaN(timeLimitSeconds) || timeLimitSeconds <= 0) {
-      showViolationModal('Thời gian không hợp lệ', 'Vui lòng nhập thời gian làm bài hợp lệ.');
+      alert('Thời gian không hợp lệ. Vui lòng nhập thời gian làm bài hợp lệ.');
       return;
     }
   } else {
@@ -121,6 +94,8 @@ async function startExam() {
 
   fileInput.classList.add('hidden');
   document.getElementById('config').classList.add('hidden');
+  document.getElementById('resultContainer').classList.add('hidden');
+  document.getElementById('examContainer').classList.remove('hidden');
 
   quizStarted = true;
   setupTimer();
@@ -236,30 +211,32 @@ function setupAntiCheatListeners() {
   });
 }
 
+// HÀM CẬP NHẬT: recordViolation
 function recordViolation(message) {
+  if (isSubmitting) return; // Ngăn chặn vi phạm khi bài đã kết thúc
+  
   violationCount++;
-  if (violationCount >= 2) {
-    showViolationModal(
-      'Cảnh báo vi phạm!',
-      `Bạn đã vi phạm quy chế thi lần ${violationCount}. Bài làm sẽ tự động được nộp!`
+  if (violationCount === 1) {
+    displayFullScreenNotification(
+      "Vi phạm lần 1: Ôi trời, định \"chơi chiêu\" hả? 🤫 Làm bài tử tế đi nha!",
+      'overlay-bg-green'
     );
+  } else if (violationCount >= 2) {
+    displayFullScreenNotification(
+      "Lêu lêu! Hết cơ hội rồi nhé! 😝",
+      'overlay-bg-red'
+    );
+    // Dừng bài ngay lập tức 
     setTimeout(() => {
         isSubmitting = true;
         submitAnswers();
-    }, 2000);
-  } else {
-    showViolationModal(
-      'Cảnh báo',
-      `Lần vi phạm thứ ${violationCount}: ${message}. Nếu vi phạm lần nữa, bài làm sẽ bị nộp.`
-    );
+    }, 10);
   }
 }
 
 function closeWarning(type) {
   if (type === 'unanswered') {
     document.getElementById('unansweredWarningModal').classList.add('hidden');
-  } else {
-    document.getElementById('genericModal').classList.add('hidden');
   }
 }
 
@@ -293,7 +270,7 @@ function parseQuestions(html) {
   if (!isNaN(pointInput) && pointInput > 0) {
     totalPoint = pointInput;
   } else {
-    showViolationModal('Lỗi', 'Điểm toàn bài phải là một số dương. Đã đặt lại thành 10.');
+    alert('Điểm toàn bài phải là một số dương. Đã đặt lại thành 10.');
     totalPoint = 10;
     document.getElementById('pointPerQuestion').value = 10;
   }
@@ -450,7 +427,7 @@ function retryLastExam() {
     userAnswers = [];
     correctAnswers = [];
     elapsedSeconds = 0;
-    violationCount = 0;
+    violationCount = 0; // ĐẶT LẠI BIẾN ĐẾM KHI LÀM LẠI BÀI
     isSubmitting = false;
     if (timer) clearInterval(timer);
 
@@ -511,4 +488,4 @@ function goToBottom() {
 
 const mammothScript = document.createElement('script');
 mammothScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js';
-document.head.appendChild(mammothScript);
+document.head.appendChild(mammothScript);a
