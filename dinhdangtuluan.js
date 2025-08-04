@@ -6,78 +6,81 @@
  * chuẩn hóa số câu hỏi và đáp án, sau đó hiển thị kết quả.
  */
 function convert() {
-  const inputText = document.getElementById("input").value;
-  const rawLines = inputText.split("\n");
-  
-  const mergedLines = [];
-  let buffer = "";
+  const inputText = document.getElementById("input").value;
+  const rawLines = inputText.split("\n");
+  
+  const mergedLines = [];
+  let buffer = "";
 
-  rawLines.forEach(line => {
-    const trimmed = line.trim();
+  rawLines.forEach(line => {
+    const trimmed = line.trim();
 
-    // Dòng trắng thì thêm dòng trắng vào kết quả nếu buffer đã có nội dung
-    if (trimmed === "") {
-      if (buffer) {
-        mergedLines.push(buffer.trim());
-      }
-      buffer = "";
-      mergedLines.push("");
-    } 
-    // Nếu là dòng bắt đầu bằng "Câu" hoặc số thứ tự, đây là một câu hỏi mới
-    else if (/^(Câu\s*\d+[\s:.)]*|\d+[\s:.)]*)/i.test(trimmed)) {
-      if (buffer) {
-        mergedLines.push(buffer.trim());
-      }
-      buffer = trimmed;
-    } 
-    // Nếu là đáp án mới (a. / b) / C. ...)
-    else if (/^(\*\*|\*|\/|_)?\s*[a-zA-Z][\.\,\)]\s+/.test(trimmed)) {
-      if (buffer) {
-        mergedLines.push(buffer.trim());
-      }
-      buffer = trimmed;
-    }
-    // Dòng phụ thì gộp vào buffer hiện tại
-    else {
-      buffer += " " + trimmed;
-    }
-  });
+    // Dòng trắng thì thêm dòng trắng vào kết quả nếu buffer đã có nội dung
+    if (trimmed === "") {
+      if (buffer) {
+        mergedLines.push(buffer.trim());
+      }
+      buffer = "";
+      mergedLines.push("");
+    } 
+    // Nếu là dòng bắt đầu bằng "Câu" hoặc số thứ tự, đây là một câu hỏi mới
+    else if (/^(Câu\s*\d+[\s:.)]*|\d+[\s:.)]*)/i.test(trimmed)) {
+      if (buffer) {
+        mergedLines.push(buffer.trim());
+      }
+      buffer = trimmed;
+    } 
+    // Nếu là đáp án mới (a. / b) / C. ...)
+    else if (/^(\*\*|\*|\/|_)?\s*[a-zA-Z][\.\,\)]\s+/.test(trimmed)) {
+      if (buffer) {
+        mergedLines.push(buffer.trim());
+      }
+      buffer = trimmed;
+    }
+    // Dòng phụ thì gộp vào buffer hiện tại
+    else {
+      buffer += " " + trimmed;
+    }
+  });
 
-  // Thêm nội dung cuối cùng trong buffer vào kết quả
-  if (buffer) {
-    mergedLines.push(buffer.trim());
-  }
+  // Thêm nội dung cuối cùng trong buffer vào kết quả
+  if (buffer) {
+    mergedLines.push(buffer.trim());
+  }
 
-  // Chuẩn hóa định dạng câu hỏi và đáp án
-  const formattedLines = [];
-  let questionCounter = 1;
-  const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
-  let answerCounter = 0;
-  
-  mergedLines.forEach(line => {
-    // Chuẩn hóa câu hỏi
-    if (/^(Câu\s*\d+[\s:.)]*|\d+[\s:.)]*)/i.test(line)) {
-      const cleanedLine = line.replace(/^(Câu\s*\d+[\s:.)]*|\d+[\s:.)]*)/i, '').trim();
-      formattedLines.push(`${questionCounter}, ${cleanedLine}`);
-      questionCounter++;
-      answerCounter = 0;
-    } 
-    // Chuẩn hóa đáp án
-    else if (/^(\*\*|\*|\/|_)?\s*[a-zA-Z][\.\,\)]\s*/.test(line)) {
-      const boldMark = line.match(/^(\*\*|\*|\/|_)/);
-      const boldPrefix = boldMark ? boldMark[0] : '';
-      const cleanedLine = line.replace(/^(\*\*|\*|\/|_)?\s*[a-zA-Z][\.\,\)]\s*/, '').trim();
-      formattedLines.push(`${boldPrefix}${letters[answerCounter]}. ${cleanedLine}`);
-      answerCounter++;
-    } 
-    // Giữ nguyên các dòng khác
-    else {
-      formattedLines.push(line);
-    }
-  });
+  // Chuẩn hóa định dạng câu hỏi và đáp án
+  const formattedLines = [];
+  let questionCounter = 1;
+  const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+  let answerCounter = 0;
+  
+  mergedLines.forEach(line => {
+    // Chuẩn hóa câu hỏi
+    if (/^(Câu\s*\d+[\s:.)]*|\d+[\s:.)]*)/i.test(line)) {
+      const cleanedLine = line.replace(/^(Câu\s*\d+[\s:.)]*|\d+[\s:.)]*)/i, '').trim();
+      formattedLines.push(`${questionCounter}, ${cleanedLine}`);
+      questionCounter++;
+      answerCounter = 0;
+    } 
+    // Chuẩn hóa đáp án
+    else if (/^(\*\*|\*|\/|_)?\s*[a-zA-Z][\.\,\)]\s*/.test(line)) {
+      const boldMark = line.match(/^(\*\*|\*|\/|_)/);
+      const boldPrefix = boldMark ? boldMark[0] : '';
+      const cleanedLine = line.replace(/^(\*\*|\*|\/|_)?\s*[a-zA-Z][\.\,\)]\s*/, '').trim();
+      // Sửa đổi dòng này để sử dụng dấu phẩy
+      formattedLines.push(`${boldPrefix}${letters[answerCounter]}, ${cleanedLine}`);
+      answerCounter++;
+    } 
+    // Giữ nguyên các dòng khác
+    else {
+      formattedLines.push(line);
+    }
+  });
 
-  document.getElementById("output").textContent = formattedLines.join("\n").trim();
+  document.getElementById("output").textContent = formattedLines.join("\n").trim();
 }
+
+// ... các hàm copyOutput, clearAll, showMessage vẫn giữ nguyên ...
 
 /**
  * Sao chép nội dung từ ô kết quả vào clipboard.
@@ -125,4 +128,5 @@ function showMessage(message, type) {
     messageBox.style.display = "none";
   }, 3000);
 }
+
 
