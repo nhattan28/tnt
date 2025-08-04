@@ -58,7 +58,7 @@ function convert() {
     // Chuẩn hóa câu hỏi
     if (/^(Câu\s*\d+[\s:.)]*|\d+[\s:.)]*)/i.test(line)) {
       const cleanedLine = line.replace(/^(Câu\s*\d+[\s:.)]*|\d+[\s:.)]*)/i, '').trim();
-      formattedLines.push(`${questionCounter}. ${cleanedLine}`);
+      formattedLines.push(`${questionCounter}, ${cleanedLine}`);
       questionCounter++;
       answerCounter = 0;
     } 
@@ -125,3 +125,4 @@ function showMessage(message, type) {
     messageBox.style.display = "none";
   }, 3000);
 }
+
