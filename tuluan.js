@@ -11,14 +11,19 @@ let totalTimeSeconds = 0;
 let quizStarted = false;
 let violationCount = 0;
 let isSubmitting = false;
+let violationTimeout = null; // Biến để lưu trữ timeout của thông báo vi phạm
 
-// Hàm hiển thị modal tùy chỉnh thay cho alert()
-function showModal(title, message, isConfirm = false, onConfirm = null) {
+// Hàm hiển thị modal tùy chỉnh cho các thông báo vi phạm
+function showViolationModal(title, message) {
   const modal = document.getElementById('genericModal');
   if (!modal) {
     console.error('Modal element not found. Please add a modal with id="genericModal" to your HTML.');
-    alert(title + "\n" + message);
     return;
+  }
+  
+  // Xóa timeout cũ nếu có
+  if (violationTimeout) {
+    clearTimeout(violationTimeout);
   }
   
   const modalTitle = document.getElementById('modalTitle');
@@ -27,26 +32,50 @@ function showModal(title, message, isConfirm = false, onConfirm = null) {
   
   modalTitle.textContent = title;
   modalMessage.textContent = message;
+  modalButtons.innerHTML = ''; // Loại bỏ các nút
+  
+  modal.classList.remove('hidden');
+
+  // Đặt timeout để tự động ẩn modal sau 2 giây
+  violationTimeout = setTimeout(() => {
+    if (modal && !modal.classList.contains('hidden')) {
+      modal.classList.add('hidden');
+    }
+  }, 2000);
+}
+
+// Hàm hiển thị modal có nút xác nhận (ví dụ: Nộp bài)
+function showConfirmModal(title, message, onConfirm = null) {
+  const modal = document.getElementById('genericModal');
+  if (!modal) {
+    console.error('Modal element not found. Please add a modal with id="genericModal" to your HTML.');
+    return;
+  }
+  
+  if (violationTimeout) {
+    clearTimeout(violationTimeout);
+  }
+
+  const modalTitle = document.getElementById('modalTitle');
+  const modalMessage = document.getElementById('modalMessage');
+  const modalButtons = document.getElementById('modalButtons');
+  
+  modalTitle.textContent = title;
+  modalMessage.textContent = message;
   modalButtons.innerHTML = '';
 
-  const okButton = document.createElement('button');
-  okButton.textContent = 'OK';
-  okButton.onclick = () => modal.classList.add('hidden');
-  modalButtons.appendChild(okButton);
-
-  if (isConfirm) {
-    const confirmButton = document.createElement('button');
-    confirmButton.textContent = 'Nộp bài';
-    confirmButton.classList.add('confirm-button');
-    confirmButton.onclick = () => {
-      modal.classList.add('hidden');
-      if (onConfirm) onConfirm();
-    };
-    modalButtons.appendChild(confirmButton);
-  }
+  const confirmButton = document.createElement('button');
+  confirmButton.textContent = 'Nộp bài';
+  confirmButton.classList.add('confirm-button');
+  confirmButton.onclick = () => {
+    modal.classList.add('hidden');
+    if (onConfirm) onConfirm();
+  };
+  modalButtons.appendChild(confirmButton);
   
   modal.classList.remove('hidden');
 }
+
 
 function handleFileAndStartExam(file) {
   uploadedFile = file;
@@ -56,7 +85,7 @@ function handleFileAndStartExam(file) {
     mammoth.convertToHtml({ arrayBuffer }).then(function(result) {
       sessionStorage.setItem('lastExamContent', result.value);
       parseQuestions(result.value);
-    }).catch(() => showModal("❌ Lỗi đọc file.", "Không thể đọc file. Vui lòng kiểm tra lại định dạng file Word (.docx)."));
+    }).catch(() => showViolationModal("❌ Lỗi đọc file.", "Không thể đọc file. Vui lòng kiểm tra lại định dạng file Word (.docx)."));
   };
   reader.readAsArrayBuffer(file);
 }
@@ -65,11 +94,10 @@ async function startExam() {
   const fileInput = document.getElementById('wordFile');
   const file = fileInput.files[0];
   if (!file) {
-    showModal('Vui lòng chọn file', 'Bạn cần chọn một file Word để bắt đầu bài kiểm tra.');
+    showViolationModal('Vui lòng chọn file', 'Bạn cần chọn một file Word để bắt đầu bài kiểm tra.');
     return;
   }
 
-  // Reset all states
   questions = [];
   userAnswers = [];
   correctAnswers = [];
@@ -84,7 +112,7 @@ async function startExam() {
     timeLimitSeconds = parseInt(timeInput) * 60;
     totalTimeSeconds = timeLimitSeconds;
     if (isNaN(timeLimitSeconds) || timeLimitSeconds <= 0) {
-      showModal('Thời gian không hợp lệ', 'Vui lòng nhập thời gian làm bài hợp lệ.');
+      showViolationModal('Thời gian không hợp lệ', 'Vui lòng nhập thời gian làm bài hợp lệ.');
       return;
     }
   } else {
@@ -211,17 +239,16 @@ function setupAntiCheatListeners() {
 function recordViolation(message) {
   violationCount++;
   if (violationCount >= 2) {
-    showModal(
+    showViolationModal(
       'Cảnh báo vi phạm!',
-      `Bạn đã vi phạm quy chế thi lần ${violationCount}. Bài làm sẽ tự động được nộp!`,
-      false,
-      () => {
+      `Bạn đã vi phạm quy chế thi lần ${violationCount}. Bài làm sẽ tự động được nộp!`
+    );
+    setTimeout(() => {
         isSubmitting = true;
         submitAnswers();
-      }
-    );
+    }, 2000);
   } else {
-    showModal(
+    showViolationModal(
       'Cảnh báo',
       `Lần vi phạm thứ ${violationCount}: ${message}. Nếu vi phạm lần nữa, bài làm sẽ bị nộp.`
     );
@@ -266,7 +293,7 @@ function parseQuestions(html) {
   if (!isNaN(pointInput) && pointInput > 0) {
     totalPoint = pointInput;
   } else {
-    showModal('Lỗi', 'Điểm toàn bài phải là một số dương. Đã đặt lại thành 10.');
+    showViolationModal('Lỗi', 'Điểm toàn bài phải là một số dương. Đã đặt lại thành 10.');
     totalPoint = 10;
     document.getElementById('pointPerQuestion').value = 10;
   }
@@ -433,7 +460,6 @@ function retryLastExam() {
     
     quizStarted = true;
     
-    // Thêm dòng này để reset thời gian giới hạn
     if (timeLimitSeconds > 0) {
       timeLimitSeconds = totalTimeSeconds;
     }
@@ -486,4 +512,3 @@ function goToBottom() {
 const mammothScript = document.createElement('script');
 mammothScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js';
 document.head.appendChild(mammothScript);
-
