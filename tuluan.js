@@ -241,40 +241,41 @@ function closeWarning(type) {
 }
 
 function parseQuestions(html) {
-  const container = document.createElement("div");
-  container.innerHTML = html;
-  const paragraphs = container.querySelectorAll("p");
-  questions = [];
-  correctAnswers = [];
+ const container = document.createElement("div");
+ container.innerHTML = html;
+ const paragraphs = container.querySelectorAll("p");
+ questions = [];
+ correctAnswers = [];
 
-  let currentQuestion = null;
+ let currentQuestion = null;
 
-  paragraphs.forEach(p => {
-    const text = p.textContent.trim();
-    const match = text.match(/^(\d+)[\.)]\s*(.+)/);
-    if (match) {
-      currentQuestion = match[2];
-      questions.push(currentQuestion);
-      correctAnswers.push('');
-    } else if (currentQuestion && correctAnswers.length > 0) {
-      const hasBoldTag = p.querySelector("strong, b");
-      const inlineStyle = p.getAttribute("style") || "";
-      const isInlineBold = /font-weight:\s*(bold|[6-9]00)/i.test(inlineStyle);
-      if (hasBoldTag || isInlineBold) {
-        correctAnswers[correctAnswers.length - 1] = p.textContent.trim();
-      }
-    }
-  });
+ paragraphs.forEach(p => {
+ const text = p.textContent.trim();
+ // Cập nhật biểu thức chính quy để nhận diện dấu phẩy hoặc dấu đóng ngoặc
+ const match = text.match(/^(\d+)[,)]\s*(.+)/);
+ if (match) {
+ currentQuestion = match[2];
+  questions.push(currentQuestion);
+ correctAnswers.push('');
+ } else if (currentQuestion && correctAnswers.length > 0) {
+const hasBoldTag = p.querySelector("strong, b");
+const inlineStyle = p.getAttribute("style") || "";
+const isInlineBold = /font-weight:\s*(bold|[6-9]00)/i.test(inlineStyle);
+if (hasBoldTag || isInlineBold) {
+ correctAnswers[correctAnswers.length - 1] = p.textContent.trim();
+}
+ }
+ });
 
-  const pointInput = parseFloat(document.getElementById('pointPerQuestion').value);
-  if (!isNaN(pointInput) && pointInput > 0) {
-    totalPoint = pointInput;
-  } else {
-    alert('Điểm toàn bài phải là một số dương. Đã đặt lại thành 10.');
-    totalPoint = 10;
-    document.getElementById('pointPerQuestion').value = 10;
-  }
-  showExam();
+ const pointInput = parseFloat(document.getElementById('pointPerQuestion').value);
+ if (!isNaN(pointInput) && pointInput > 0) {
+  totalPoint = pointInput;
+ } else {
+  alert('Điểm toàn bài phải là một số dương. Đã đặt lại thành 10.');
+  totalPoint = 10;
+  document.getElementById('pointPerQuestion').value = 10;
+ }
+ showExam();
 }
 
 function normalize(text) {
@@ -489,4 +490,3 @@ function goToBottom() {
 const mammothScript = document.createElement('script');
 mammothScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js';
 document.head.appendChild(mammothScript);
-
