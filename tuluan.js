@@ -488,4 +488,5 @@ function goToBottom() {
 
 const mammothScript = document.createElement('script');
 mammothScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js';
-document.head.appendChild(mammothScript);a
+document.head.appendChild(mammothScript);
+
