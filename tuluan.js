@@ -70,6 +70,8 @@ async function startExam() {
     alert('Vui lòng chọn một file Word (.docx) để bắt đầu.');
     return;
   }
+  // Để ẩn dropzone khi bắt đầu bài thi
+  document.getElementById('dropzone').classList.add('hidden');
 
   questions = [];
   userAnswers = [];
@@ -490,3 +492,63 @@ function goToBottom() {
 const mammothScript = document.createElement('script');
 mammothScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js';
 document.head.appendChild(mammothScript);
+
+// Kéo và thả tệp vào vùng dropzone
+document.addEventListener('DOMContentLoaded', () => {
+    // ... (các sự kiện DOMContentLoaded hiện có)
+
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('wordFile');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    
+    // Ngăn chặn hành vi mặc định của trình duyệt
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // Highlight vùng kéo và thả
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropzone.addEventListener(eventName, () => dropzone.classList.add('highlight'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, () => dropzone.classList.remove('highlight'), false);
+    });
+
+    // Xử lý khi thả file
+    dropzone.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+    }
+
+    // Xử lý khi chọn file bằng nút
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+    });
+    
+    function handleFiles(files) {
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.name.endsWith('.docx') || file.name.endsWith('.doc')) {
+                // Đặt file đã chọn vào input để hàm startExam có thể sử dụng
+                // Cần tạo một DataTransfer mới để mô phỏng
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+
+                fileNameDisplay.textContent = `Đã chọn: ${file.name}`;
+            } else {
+                alert('Vui lòng chọn một file Word (.docx) hợp lệ.');
+                fileNameDisplay.textContent = '';
+            }
+        }
+    }
+});
