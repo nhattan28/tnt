@@ -8,7 +8,12 @@
 <body>
   <div class="container">
     <h1>📝 Kiểm tra tự luận</h1>
-    <input type="file" id="wordFile" accept=".doc,.docx">
+    <div id="dropzone" class="dropzone">
+    <p>Kéo và thả tệp Word (.docx) vào đây hoặc</p>
+    <label for="wordFile" class="custom-file-upload">Chọn tệp</label>
+    <input type="file" id="wordFile" accept=".doc,.docx" class="hidden">
+    <p id="fileNameDisplay" class="file-name-display"></p>
+  </div>
 
     <div id="config">
       <label>Nhập điểm</label>
