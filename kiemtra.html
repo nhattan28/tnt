@@ -3,37 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bài Thi Online</title>
-    <!-- Tailwind CSS CDN để đảm bảo responsiveness và styling hiện đại -->
+    <title>Kiểm tra</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Đảm bảo toàn màn hình và căn chỉnh phù hợp */
+        /* Tối ưu hóa cho màn hình điện thoại */
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
-            min-height: 99vh; /* Chiếm 99% chiều cao viewport */
-            width: 99vw; /* Chiếm 99% chiều rộng viewport */
-            overflow: hidden; /* Ngăn cuộn trang chính */
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #e0f7fa, #f0f8ff); /* Nền gradient nhẹ nhàng */
+            background: linear-gradient(135deg, #adf5ff, #f0f8ff);
             color: #1f2937;
+            box-sizing: border-box; /* Đảm bảo padding không làm tràn kích thước */
         }
 
-        /* Container chính giữa màn hình */
         .main-container {
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 1.5rem; /* Bo tròn góc */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Đổ bóng nhẹ */
-            padding: 2rem;
-            max-width: 90%; /* Giới hạn chiều rộng trên màn hình lớn */
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 1.5rem; /* Giảm padding trên mobile */
+            margin: 1rem; /* Thêm margin để tránh dính sát vào mép màn hình */
+            max-width: 95%; /* Mở rộng tối đa trên mobile */
             width: 100%;
             text-align: center;
-            animation: fadeIn 1s ease-out; /* Hiệu ứng fade in khi tải trang */
-            box-sizing: border-box; /* Đảm bảo padding không làm tràn kích thước */
+            animation: fadeIn 1s ease-out;
+            
         }
 
         @keyframes fadeIn {
@@ -42,20 +39,27 @@
         }
 
         h1 {
-            font-size: 2.5rem; /* Kích thước tiêu đề chính */
+            font-size: 2rem; /* Giảm font-size trên mobile */
             font-weight: 700;
             color: #1a202c;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem; /* Giảm margin-bottom */
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .description {
+            font-size: 1rem; /* Giảm font-size */
+            color: #4a5568;
+            margin-bottom: 2rem;
+            padding: 0 0.5rem; /* Giảm padding */
         }
 
         .section-card {
-            background: linear-gradient(45deg, #f0f9ff, #e0f2fe); /* Nền gradient cho từng phần */
+            background: linear-gradient(45deg, #f0f9ff, #e0f2fe);
             border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            padding: 1.25rem; /* Giảm padding */
+            margin-bottom: 1.25rem; /* Giảm margin-bottom */
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng hover */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .section-card:hover {
@@ -64,90 +68,57 @@
         }
 
         .section-card h2 {
-            font-size: 1.8rem;
+            font-size: 1.5rem; /* Giảm font-size */
             font-weight: 600;
             color: #2b6cb0;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
         .section-card p {
-            font-size: 1.1rem;
+            font-size: 1rem; /* Giảm font-size */
             color: #4a5568;
-            line-height: 1.6;
-            margin-bottom: 1.25rem;
+            line-height: 1.5; /* Điều chỉnh line-height cho dễ đọc */
+            margin-bottom: 1rem;
         }
 
         .section-card button {
-            background: linear-gradient(to right, #4299e1, #63b3ed); /* Nút gradient */
+            background: linear-gradient(to right, #4299e1, #63b3ed);
             color: white;
-            padding: 0.75rem 2rem;
+            padding: 0.75rem 1.5rem; /* Điều chỉnh padding */
             border: none;
             border-radius: 0.75rem;
-            font-size: 1.1rem;
+            font-size: 1rem; /* Giảm font-size */
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s ease, transform 0.2s ease;
+            width: 100%; /* Cho nút chiếm toàn bộ chiều rộng */
         }
 
         .section-card button:hover {
             background: linear-gradient(to right, #3182ce, #4299e1);
             transform: translateY(-2px);
         }
-
-        /* Responsive adjustments */
-        @media (min-width: 640px) { /* Small screens (sm) */
-            .main-container {
-                padding: 3rem;
-                max-width: 80%;
-            }
-            h1 {
-                font-size: 3rem;
-            }
-            .section-card h2 {
-                font-size: 2rem;
-            }
-            .section-card p {
-                font-size: 1.2rem;
-            }
-        }
-
-        @media (min-width: 1024px) { /* Large screens (lg) */
-            .main-container {
-                padding: 4rem;
-                max-width: 60%;
-            }
-            h1 {
-                font-size: 3.5rem;
-            }
-            .section-card h2 {
-                font-size: 2.2rem;
-            }
-            .section-card p {
-                font-size: 1.3rem;
-            }
-        }
+        
     </style>
 </head>
 <body>
     <div class="main-container">
-        <h1>Chào mừng đến với Ứng Dụng Bài Thi Online!</h1>
-        <p class="text-lg text-gray-600 mb-8">
+        <h1>Chào mừng đến với hệ thống kiểm tra!</h1>
+        <p class="description">
             Khám phá các công cụ mạnh mẽ giúp bạn tạo và thực hiện các bài kiểm tra một cách dễ dàng và hiệu quả.
         </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Phần giới thiệu Trắc nghiệm -->
+        <div class="flex flex-col gap-5">
             <div class="section-card">
-                <h2>📝 Bài Thi Trắc Nghiệm</h2>
+                <h2>📝 Kiểm tra Trắc Nghiệm</h2>
                 <p>
-                    Tạo các bài kiểm tra trắc nghiệm từ file Word (.docx) của bạn. Hệ thống sẽ tự động phân tích câu hỏi, đáp án và đáp án đúng (in đậm). Bao gồm các tính năng chống gian lận và tính điểm tự động.
+                    Cho phép bạn tạo các bài kiểm tra tự luận từ file Word (.docx). Hệ thống sẽ tự động phân tích câu hỏi, đáp án đúng (in đậm).
                 </p>
                 <button onclick="loadPage(event, 'tracnghiem.html')">Bắt đầu Trắc Nghiệm</button>
             </div>
 
-            <!-- Phần giới thiệu Tự luận -->
             <div class="section-card">
-                <h2>✍️ Bài Thi Tự Luận</h2>
+                <h2>✍️ Kiểm tra Tự Luận</h2>
                 <p>
                     Cho phép bạn tạo các bài kiểm tra tự luận từ file Word (.docx). Hệ thống sẽ hỗ trợ chấm điểm và so sánh đáp án.
                 </p>
@@ -157,8 +128,8 @@
     </div>
     <script>
         function loadPage(event, page) {
-            event.preventDefault(); // Ngăn chặn hành vi mặc định của nút
-            window.location.href = page; // Chuyển hướng đến trang được chọn
+            event.preventDefault();
+            window.location.href = page;
         }
     </script>
 </body>
