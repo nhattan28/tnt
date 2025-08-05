@@ -2,6 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tự luận</title>
   <link rel="stylesheet" href="tuluan.css">
 </head>
@@ -9,15 +10,15 @@
   <div class="container">
     <h1>📝 Kiểm tra tự luận</h1>
     <div id="dropzone" class="dropzone">
-    <p>Kéo và thả tệp Word (.docx) vào đây hoặc</p>
-    <label for="wordFile" class="custom-file-upload">Chọn tệp</label>
-    <input type="file" id="wordFile" accept=".doc,.docx" class="hidden">
-    <p id="fileNameDisplay" class="file-name-display"></p>
-  </div>
+      <p>Kéo và thả tệp Word (.docx) vào đây hoặc</p>
+      <label for="wordFile" class="custom-file-upload">Chọn tệp</label>
+      <input type="file" id="wordFile" accept=".doc,.docx" class="hidden">
+      <p id="fileNameDisplay" class="file-name-display"></p>
+    </div>
 
     <div id="config">
       <label>Nhập điểm</label>
-<input type="number" id="pointPerQuestion" min="1" max="10">
+      <input type="number" id="pointPerQuestion" min="1" max="10">
 
       <div class="time-config-container">
         <label>Chế độ thời gian:</label>
@@ -43,6 +44,9 @@
       </div>
       <div id="countdown" class="countdown"></div>
       <div id="questionsContainer"></div>
+      <div class="submit-button-container">
+          <button onclick="submitExam()">Nộp bài</button>
+      </div>
     </div>
 
     <div id="resultContainer" class="hidden">
