@@ -1,3 +1,4 @@
+
 const score = localStorage.getItem("quizScore");
 const correct = localStorage.getItem("quizCorrect");
 const total = localStorage.getItem("quizTotal");
@@ -153,7 +154,7 @@ function restartQuiz() {
   retryData[fileName].attempts += 1;
   localStorage.setItem("retryData", JSON.stringify(retryData));
   localStorage.setItem("restartQuiz", "true"); // Signal to the quiz page to restart
-  window.location.href = "kiemtra.html";
+  window.location.href = "tracnghiem.html";
 }
 
 function goBack() {
@@ -230,3 +231,4 @@ document.addEventListener('keydown', (e) => {
 window.onload = function() {
   // Any setup or initial actions after the page fully loads can go here.
 };
+
