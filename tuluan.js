@@ -287,6 +287,13 @@ function normalize(text) {
     .trim();
 }
 
+function updateQuestionCounter() {
+  const counterElement = document.getElementById('questionCounter');
+  if (counterElement) {
+    counterElement.textContent = `Câu hỏi: ${currentQuestionIndex + 1}/${questions.length}`;
+  }
+}
+
 function showExam() {
   const questionsContainer = document.getElementById('questionsContainer');
   questionsContainer.innerHTML = '';
@@ -327,6 +334,7 @@ function showExam() {
     });
   });
 
+  updateQuestionCounter();
   updateNavigationButtons();
 }
 
@@ -340,6 +348,7 @@ function showQuestion(index) {
     }
   });
   updateNavigationButtons();
+  updateQuestionCounter();
 }
 
 function nextQuestion() {
