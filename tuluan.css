@@ -7,6 +7,8 @@ body {
   box-sizing: border-box;
   height: 100vh;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
@@ -16,11 +18,11 @@ body {
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.5s ease-in-out;
-  height: 100vh;
-  overflow-y: auto;
+  height: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 @keyframes fadeIn {
@@ -87,7 +89,7 @@ button[disabled] {
   font-weight: bold;
 }
 
-.countdown {
+.countdown, .question-counter {
   font-weight: bold;
   margin-bottom: 10px;
   color: #007BFF;
