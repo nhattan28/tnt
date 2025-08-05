@@ -352,3 +352,42 @@ textarea {
     font-size: 20px; /* Kích thước chữ mặc định là 16px */
     line-height: 1.2; /* Tăng khoảng cách giữa các dòng để dễ đọc hơn */
 }
+
+.dropzone {
+    border: 2px dashed #007BFF;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.dropzone:hover {
+    background-color: #f0f8ff;
+}
+
+.dropzone.highlight {
+    background-color: #e0f7fa;
+    border-color: #0056b3;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.custom-file-upload:hover {
+    background-color: #0056b3;
+}
+
+.file-name-display {
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
+}
