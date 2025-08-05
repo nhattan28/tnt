@@ -295,7 +295,7 @@ function showExam() {
     questionsContainer.innerHTML += `
       <div>
         <p><strong>Câu ${i + 1}:</strong> ${q}</p>
-        <textarea data-index="${i}" rows="3" style="width:100%"></textarea>
+        <textarea data-index="${i}" rows="10" style="width:100%"></textarea>
       </div>
     `;
   });
