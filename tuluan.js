@@ -11,6 +11,7 @@ let totalTimeSeconds = 0;
 let quizStarted = false;
 let violationCount = 0;
 let isSubmitting = false;
+let currentQuestionIndex = 0; // Biến mới để theo dõi câu hỏi hiện tại
 
 // HÀM MỚI: Hiển thị thông báo vi phạm toàn màn hình
 function displayFullScreenNotification(message, backgroundColorClass) {
@@ -43,12 +44,12 @@ function displayFullScreenNotification(message, backgroundColorClass) {
   // Tự động ẩn overlay sau 2 giây
   setTimeout(() => {
     overlay.classList.remove('show');
+    // Xóa hẳn overlay khỏi DOM sau khi ẩn
     if (overlayContainer && !overlay.classList.contains('show')) {
-      overlayContainer.innerHTML = ''; // Xóa hẳn overlay khỏi DOM
+      overlayContainer.innerHTML = '';
     }
   }, 2000); // 2 giây
 }
-
 
 function handleFileAndStartExam(file) {
   uploadedFile = file;
@@ -63,22 +64,23 @@ function handleFileAndStartExam(file) {
   reader.readAsArrayBuffer(file);
 }
 
-async function startExam() {
+function startExam() {
   const fileInput = document.getElementById('wordFile');
   const file = fileInput.files[0];
   if (!file) {
     alert('Vui lòng chọn một file Word (.docx) để bắt đầu.');
     return;
   }
-  // Để ẩn dropzone khi bắt đầu bài thi
+  
   document.getElementById('dropzone').classList.add('hidden');
 
   questions = [];
   userAnswers = [];
   correctAnswers = [];
   elapsedSeconds = 0;
-  violationCount = 0; // ĐẶT LẠI BIẾN ĐẾM KHI BẮT ĐẦU BÀI MỚI
+  violationCount = 0;
   isSubmitting = false;
+  currentQuestionIndex = 0;
   if (timer) clearInterval(timer);
   
   const timeMode = document.querySelector('input[name="timeMode"]:checked').value;
@@ -213,9 +215,8 @@ function setupAntiCheatListeners() {
   });
 }
 
-// HÀM CẬP NHẬT: recordViolation
 function recordViolation(message) {
-  if (isSubmitting) return; // Ngăn chặn vi phạm khi bài đã kết thúc
+  if (isSubmitting) return;
   
   violationCount++;
   if (violationCount === 1) {
@@ -228,7 +229,6 @@ function recordViolation(message) {
       "Lêu lêu! Hết cơ hội rồi nhé! 😝",
       'overlay-bg-red'
     );
-    // Dừng bài ngay lập tức 
     setTimeout(() => {
         isSubmitting = true;
         submitAnswers();
@@ -248,12 +248,10 @@ function parseQuestions(html) {
  const paragraphs = container.querySelectorAll("p");
  questions = [];
  correctAnswers = [];
-
  let currentQuestion = null;
 
  paragraphs.forEach(p => {
  const text = p.textContent.trim();
- // Cập nhật biểu thức chính quy để nhận diện dấu phẩy hoặc dấu đóng ngoặc
  const match = text.match(/^(\d+)[,)]\s*(.+)/);
  if (match) {
  currentQuestion = match[2];
@@ -289,17 +287,29 @@ function normalize(text) {
     .trim();
 }
 
+function updateQuestionCounter() {
+  const counterElement = document.getElementById('questionCounter');
+  if (counterElement) {
+    counterElement.textContent = `Câu hỏi: ${currentQuestionIndex + 1}/${questions.length}`;
+  }
+}
+
 function showExam() {
   const questionsContainer = document.getElementById('questionsContainer');
   questionsContainer.innerHTML = '';
   
   questions.forEach((q, i) => {
-    questionsContainer.innerHTML += `
-      <div>
-        <p><strong>Câu ${i + 1}:</strong> ${q}</p>
-        <textarea data-index="${i}" rows="10" style="width:100%"></textarea>
-      </div>
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question-slide';
+    questionDiv.id = `question-${i}`;
+    if (i !== 0) {
+      questionDiv.classList.add('hidden');
+    }
+    questionDiv.innerHTML = `
+      <p><strong>Câu ${i + 1}:</strong> ${q}</p>
+      <textarea data-index="${i}" rows="10" placeholder="Nhập câu trả lời của bạn..." style="width:100%"></textarea>
     `;
+    questionsContainer.appendChild(questionDiv);
   });
   
   const textareas = questionsContainer.querySelectorAll('textarea');
@@ -324,12 +334,54 @@ function showExam() {
     });
   });
 
-  questionsContainer.innerHTML += '<button onclick="submitAnswers()">Nộp bài</button>';
+  updateQuestionCounter();
+  updateNavigationButtons();
+}
+
+function showQuestion(index) {
+  const allQuestions = document.querySelectorAll('.question-slide');
+  allQuestions.forEach((q, i) => {
+    if (i === index) {
+      q.classList.remove('hidden');
+    } else {
+      q.classList.add('hidden');
+    }
+  });
+  updateNavigationButtons();
+  updateQuestionCounter();
+}
+
+function nextQuestion() {
+  if (currentQuestionIndex < questions.length - 1) {
+    currentQuestionIndex++;
+    showQuestion(currentQuestionIndex);
+  }
+}
+
+function prevQuestion() {
+  if (currentQuestionIndex > 0) {
+    currentQuestionIndex--;
+    showQuestion(currentQuestionIndex);
+  }
+}
+
+function updateNavigationButtons() {
+  const prevBtn = document.getElementById('prevButton');
+  const nextBtn = document.getElementById('nextButton');
+  
+  if (questions.length <= 1) {
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+  } else {
+    prevBtn.disabled = (currentQuestionIndex === 0);
+    nextBtn.disabled = (currentQuestionIndex === questions.length - 1);
+  }
 }
 
 function submitAnswers() {
-  if (timer) clearInterval(timer);
-  const textareas = document.querySelectorAll('textarea');
+  if (isSubmitting) return; // Ngăn chặn nộp bài nhiều lần
+  
+  const textareas = document.querySelectorAll('#questionsContainer textarea');
   userAnswers = [];
   const unansweredQuestions = [];
 
@@ -341,12 +393,16 @@ function submitAnswers() {
     }
   });
 
-  if (unansweredQuestions.length > 0 && !isSubmitting) {
+  if (unansweredQuestions.length > 0) {
     showUnansweredWarning(unansweredQuestions);
   } else {
     isSubmitting = true;
     confirmSubmit();
   }
+}
+
+function submitExam() {
+  submitAnswers();
 }
 
 function showUnansweredWarning(unansweredQuestions) {
@@ -362,8 +418,17 @@ function showUnansweredWarning(unansweredQuestions) {
 }
 
 function confirmSubmit() {
+  if (timer) clearInterval(timer);
+  isSubmitting = true;
+  
   let correct = 0;
   let answeredCount = 0;
+
+  const textareas = document.querySelectorAll('#questionsContainer textarea');
+  textareas.forEach((ta, i) => {
+    const userAns = ta.value.trim();
+    userAnswers[i] = userAns;
+  });
 
   userAnswers.forEach((userAns, i) => {
     if (userAns !== '') {
@@ -409,7 +474,7 @@ function reviewAnswers(filter = null) {
     const isCorrect = normalize(userAnswers[i]) === normalize(correctAnswers[i]);
     if (filter === null || (filter === true && isCorrect) || (filter === false && !isCorrect)) {
       reviewDiv.innerHTML += `
-        <div class="${isCorrect ? 'correct' : 'incorrect'}">
+        <div class="question-review ${isCorrect ? 'correct' : 'incorrect'}">
           <p><strong>Câu ${i + 1}:</strong> ${q}</p>
           <p>Đáp án của bạn: ${userAnswers[i]}</p>
           <p>Đáp án đúng: ${correctAnswers[i]}</p>
@@ -430,8 +495,9 @@ function retryLastExam() {
     userAnswers = [];
     correctAnswers = [];
     elapsedSeconds = 0;
-    violationCount = 0; // ĐẶT LẠI BIẾN ĐẾM KHI LÀM LẠI BÀI
+    violationCount = 0;
     isSubmitting = false;
+    currentQuestionIndex = 0;
     if (timer) clearInterval(timer);
 
     document.getElementById('resultContainer').classList.add('hidden');
@@ -479,29 +545,11 @@ document.addEventListener('DOMContentLoaded', () => {
             examTimeInput.focus();
         }
     });
-});
-
-function goToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function goToBottom() {
-  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-}
-
-const mammothScript = document.createElement('script');
-mammothScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js';
-document.head.appendChild(mammothScript);
-
-// Kéo và thả tệp vào vùng dropzone
-document.addEventListener('DOMContentLoaded', () => {
-    // ... (các sự kiện DOMContentLoaded hiện có)
 
     const dropzone = document.getElementById('dropzone');
     const fileInput = document.getElementById('wordFile');
     const fileNameDisplay = document.getElementById('fileNameDisplay');
     
-    // Ngăn chặn hành vi mặc định của trình duyệt
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropzone.addEventListener(eventName, preventDefaults, false);
     });
@@ -511,7 +559,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.stopPropagation();
     }
 
-    // Highlight vùng kéo và thả
     ['dragenter', 'dragover'].forEach(eventName => {
         dropzone.addEventListener(eventName, () => dropzone.classList.add('highlight'), false);
     });
@@ -520,7 +567,6 @@ document.addEventListener('DOMContentLoaded', () => {
         dropzone.addEventListener(eventName, () => dropzone.classList.remove('highlight'), false);
     });
 
-    // Xử lý khi thả file
     dropzone.addEventListener('drop', handleDrop, false);
 
     function handleDrop(e) {
@@ -529,7 +575,6 @@ document.addEventListener('DOMContentLoaded', () => {
         handleFiles(files);
     }
 
-    // Xử lý khi chọn file bằng nút
     fileInput.addEventListener('change', (e) => {
         handleFiles(e.target.files);
     });
@@ -538,8 +583,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (files.length > 0) {
             const file = files[0];
             if (file.name.endsWith('.docx') || file.name.endsWith('.doc')) {
-                // Đặt file đã chọn vào input để hàm startExam có thể sử dụng
-                // Cần tạo một DataTransfer mới để mô phỏng
                 const dataTransfer = new DataTransfer();
                 dataTransfer.items.add(file);
                 fileInput.files = dataTransfer.files;
@@ -552,3 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+const mammothScript = document.createElement('script');
+mammothScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js';
+document.head.appendChild(mammothScript);
