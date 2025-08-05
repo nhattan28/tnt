@@ -323,7 +323,7 @@ button:hover {
 }
 
 /* Điện thoại */
-@media (max-width: 768px) {
+@media (max-width: 700px) {
     body {
         padding: 10px;
     }
