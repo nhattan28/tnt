@@ -99,7 +99,10 @@ function startExam() {
   fileInput.classList.add('hidden');
   document.getElementById('config').classList.add('hidden');
   document.getElementById('resultContainer').classList.add('hidden');
+  
   document.getElementById('examContainer').classList.remove('hidden');
+  document.querySelector('.bottom-actions').classList.remove('hidden');
+
 
   quizStarted = true;
   setupTimer();
@@ -168,7 +171,7 @@ function setupTimer() {
       if (timeToDisplay <= 0) {
         clearInterval(timer);
         isSubmitting = true;
-        submitAnswers();
+        forceSubmitAnswers();
         return;
       }
     } else {
@@ -231,7 +234,7 @@ function recordViolation(message) {
     );
     setTimeout(() => {
         isSubmitting = true;
-        submitAnswers();
+        forceSubmitAnswers();
     }, 10);
   }
 }
@@ -401,6 +404,12 @@ function submitAnswers() {
   }
 }
 
+// Hàm mới: Nộp bài tự động khi hết giờ, bỏ qua cảnh báo
+function forceSubmitAnswers() {
+  isSubmitting = true;
+  confirmSubmit();
+}
+
 function submitExam() {
   submitAnswers();
 }
@@ -447,6 +456,7 @@ function confirmSubmit() {
 
   document.getElementById('unansweredWarningModal').classList.add('hidden');
   document.getElementById('examContainer').classList.add('hidden');
+  document.querySelector('.bottom-actions').classList.add('hidden');
   document.getElementById('resultContainer').classList.remove('hidden');
 
   document.getElementById('totalQuestions').textContent = total;
