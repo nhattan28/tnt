@@ -50,6 +50,12 @@
           <div id="questionsContainer">
             </div>
         </div>
+        
+        <div class="bottom-actions">
+          <button id="prevButton" onclick="prevQuestion()" disabled>Lùi</button>
+          <button id="nextButton" onclick="nextQuestion()">Tiếp</button>
+          <button id="submitExamButton" onclick="submitExam()">Nộp bài</button>
+        </div>
       </div>
 
       <div id="resultContainer" class="hidden">
@@ -95,12 +101,6 @@
         </div>
         <div id="answerReview"></div>
       </div>
-    </div>
-    
-    <div class="bottom-actions hidden">
-      <button id="prevButton" onclick="prevQuestion()" disabled>Lùi</button>
-      <button id="nextButton" onclick="nextQuestion()">Tiếp</button>
-      <button id="submitExamButton" onclick="submitExam()">Nộp bài</button>
     </div>
   </div>
 
