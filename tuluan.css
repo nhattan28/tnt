@@ -7,8 +7,12 @@ body {
   box-sizing: border-box;
   height: 100vh;
   overflow: hidden;
+}
+
+.main-wrapper {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .container {
@@ -22,6 +26,7 @@ body {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   overflow-y: auto;
 }
 
@@ -334,8 +339,7 @@ button[disabled] {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding-bottom: 70px; /* Thêm padding để tránh nội dung bị che khuất bởi thanh điều hướng */
-  box-sizing: border-box;
+  flex-grow: 1;
 }
 
 /* Bố cục cho phần câu hỏi (chỉ hiển thị một câu tại một thời điểm) */
@@ -363,14 +367,11 @@ button[disabled] {
   gap: 10px;
   padding: 10px;
   background-color: white;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 12px 12px 0 0;
   box-sizing: border-box;
   z-index: 100;
+  flex-shrink: 0;
+  border-radius: 12px 12px 0 0;
 }
 
 .bottom-actions button {
@@ -451,9 +452,5 @@ textarea {
         left: 0;
         transform: none;
         padding: 10px;
-    }
-
-    #examContainer {
-        padding-bottom: 70px; 
     }
 }
