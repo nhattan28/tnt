@@ -11,11 +11,9 @@ let totalTimeSeconds = 0;
 let quizStarted = false;
 let violationCount = 0;
 let isSubmitting = false;
-let currentQuestionIndex = 0; // Biến mới để theo dõi câu hỏi hiện tại
+let currentQuestionIndex = 0;
 
-// HÀM MỚI: Hiển thị thông báo vi phạm toàn màn hình
 function displayFullScreenNotification(message, backgroundColorClass) {
-  // Tạo hoặc tìm overlay container
   let overlayContainer = document.getElementById('full-screen-overlay-container');
   if (!overlayContainer) {
     overlayContainer = document.createElement('div');
@@ -23,10 +21,7 @@ function displayFullScreenNotification(message, backgroundColorClass) {
     document.body.appendChild(overlayContainer);
   }
 
-  // Xóa overlay cũ nếu có
   overlayContainer.innerHTML = '';
-
-  // Tạo overlay mới
   const overlay = document.createElement('div');
   overlay.className = `fullscreen-overlay ${backgroundColorClass}`;
   
@@ -36,19 +31,16 @@ function displayFullScreenNotification(message, backgroundColorClass) {
   overlay.appendChild(messageText);
   overlayContainer.appendChild(overlay);
 
-  // Hiển thị overlay
   setTimeout(() => {
     overlay.classList.add('show');
   }, 50);
 
-  // Tự động ẩn overlay sau 2 giây
   setTimeout(() => {
     overlay.classList.remove('show');
-    // Xóa hẳn overlay khỏi DOM sau khi ẩn
     if (overlayContainer && !overlay.classList.contains('show')) {
       overlayContainer.innerHTML = '';
     }
-  }, 2000); // 2 giây
+  }, 2000);
 }
 
 function handleFileAndStartExam(file) {
@@ -73,6 +65,10 @@ function startExam() {
   }
   
   document.getElementById('dropzone').classList.add('hidden');
+  document.getElementById('config').classList.add('hidden');
+  document.getElementById('resultContainer').classList.add('hidden');
+  document.getElementById('examContainer').classList.remove('hidden');
+  document.querySelector('.bottom-actions').classList.remove('hidden');
 
   questions = [];
   userAnswers = [];
@@ -94,16 +90,10 @@ function startExam() {
     }
   } else {
     timeLimitSeconds = 0;
+    totalTimeSeconds = 0;
   }
 
   fileInput.classList.add('hidden');
-  document.getElementById('config').classList.add('hidden');
-  document.getElementById('resultContainer').classList.add('hidden');
-  
-  document.getElementById('examContainer').classList.remove('hidden');
-  document.querySelector('.bottom-actions').classList.remove('hidden');
-
-
   quizStarted = true;
   setupTimer();
   setupAntiCheatListeners();
@@ -382,7 +372,7 @@ function updateNavigationButtons() {
 }
 
 function submitAnswers() {
-  if (isSubmitting) return; // Ngăn chặn nộp bài nhiều lần
+  if (isSubmitting) return;
   
   const textareas = document.querySelectorAll('#questionsContainer textarea');
   userAnswers = [];
@@ -404,7 +394,6 @@ function submitAnswers() {
   }
 }
 
-// Hàm mới: Nộp bài tự động khi hết giờ, bỏ qua cảnh báo
 function forceSubmitAnswers() {
   isSubmitting = true;
   confirmSubmit();
@@ -513,7 +502,8 @@ function retryLastExam() {
     document.getElementById('resultContainer').classList.add('hidden');
     document.getElementById('config').classList.add('hidden');
     document.getElementById('wordFile').classList.add('hidden');
-    
+    document.querySelector('.bottom-actions').classList.remove('hidden'); // Dòng này được thêm vào để hiển thị lại các nút
+
     quizStarted = true;
     
     if (timeLimitSeconds > 0) {
