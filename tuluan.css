@@ -5,6 +5,8 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow: hidden; /* Ngăn cuộn trang */
+  height: 90%;    /* Chiếm toàn bộ chiều cao màn hình */
 }
 
 .main-wrapper {
@@ -423,3 +425,4 @@ textarea {
         padding: 10px;
     }
 }
+
