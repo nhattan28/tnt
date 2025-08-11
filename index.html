@@ -118,21 +118,25 @@
         text-align: center;
         margin: 10px 0;
         font-family: 'Courier New', monospace;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
       .clock {
         font-size: 18px;
         color: black;
-        letter-spacing: 4px;
+        
+        margin-right: 10px;
       }
 
       .date {
         font-size: 18px;
-        color: #555;
+        color: black;
       }
 
       .toggle-btn {
-        background: #fafafa;
+        background: none;
         border: none;
         color: red;
         font-size: 20px;
@@ -140,12 +144,13 @@
         cursor: pointer;
         z-index: 1002;
         position: fixed;
-        top: 10px;
-        left: 10px;
+        top: 0px;
+        left: 1px;
       }
 
       .toggle-btn.hide {
         display: none;
+        font-size: 2px;;
       }
 
       iframe {
@@ -238,6 +243,3 @@
     <script src="index.js"></script>
   </body>
 </html>
-
-
-
