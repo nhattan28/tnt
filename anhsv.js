@@ -37,24 +37,8 @@ window.addEventListener('focus', () => {
     setTimeout(devToolsStatus, 100);
 });
 
-// Xử lý sự kiện dán và xóa
-document.getElementById('paste-button').addEventListener('click', async () => {
-    try {
-        const text = await navigator.clipboard.readText();
-        document.getElementById('student-id').value = text.trim();
-    } catch (err) {
-        alert('Không thể dán. Vui lòng cho phép quyền truy cập clipboard.');
-    }
-});
-
-document.getElementById('clear-button').addEventListener('click', () => {
-    document.getElementById('student-id').value = '';
-});
-
-// Xử lý sự kiện tìm kiếm
-document.getElementById('search-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-
+// Hàm xử lý logic tìm kiếm ảnh sinh viên
+function searchStudentImage() {
     const studentId = document.getElementById('student-id').value;
 
     if (studentId) {
@@ -67,6 +51,64 @@ document.getElementById('search-form').addEventListener('submit', function(event
         document.getElementById('search-form-container').style.display = 'none';
         document.getElementById('image-view').style.display = 'block';
     }
+}
+
+// Xử lý sự kiện khi nhấn phím trên ô nhập liệu
+document.getElementById('student-id').addEventListener('keydown', function(event) {
+    // Cho phép các phím điều hướng và chỉnh sửa
+    const allowedKeys = [
+        'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'
+    ];
+    
+    // Nếu phím là Enter, thực hiện tìm kiếm
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        searchStudentImage();
+        return;
+    }
+
+    // Nếu phím không phải là số và không phải là phím điều hướng, chặn nó
+    if (!event.key.match(/^[0-9]$/) && !allowedKeys.includes(event.key)) {
+        if (!(event.ctrlKey || event.metaKey) || !['v', 'c', 'a'].includes(event.key.toLowerCase())) {
+            event.preventDefault();
+        }
+    }
+});
+
+// Xử lý sự kiện dán và xóa
+document.getElementById('paste-button').addEventListener('click', async () => {
+    try {
+        const text = await navigator.clipboard.readText();
+        const cleanedText = text.trim().replace(/[^0-9]/g, '');
+        
+        if (cleanedText.length > 15) {
+            document.getElementById('student-id').value = cleanedText.substring(0, 15);
+        } else {
+            document.getElementById('student-id').value = cleanedText;
+        }
+    } catch (err) {
+        alert('Không thể dán. Vui lòng cho phép quyền truy cập clipboard.');
+    }
+});
+
+document.getElementById('clear-button').addEventListener('click', () => {
+    document.getElementById('student-id').value = '';
+});
+
+// Xử lý sự kiện dán trực tiếp vào ô input để đảm bảo dữ liệu luôn là số
+document.getElementById('student-id').addEventListener('paste', function(e) {
+    e.preventDefault();
+    const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+    const cleanedData = pastedData.replace(/[^0-9]/g, '');
+    const maxLength = 15;
+    const finalData = cleanedData.substring(0, maxLength);
+    this.value = finalData;
+});
+
+// Xử lý sự kiện tìm kiếm khi nhấn nút "Tìm kiếm"
+document.getElementById('search-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    searchStudentImage();
 });
 
 // Xử lý sự kiện quay lại
@@ -77,4 +119,34 @@ document.getElementById('back-button').addEventListener('click', function() {
     
     // Xóa nội dung ô nhập liệu
     document.getElementById('student-id').value = '';
+
+    // Tự động focus vào ô nhập liệu khi quay lại
+    document.getElementById('student-id').focus();
+});
+
+// Xử lý sự kiện click nút "Phím" để ẩn/hiện bàn phím ảo
+document.getElementById('keypad-toggle-button').addEventListener('click', function() {
+    document.getElementById('virtual-keypad').classList.toggle('visible');
+});
+
+// Xử lý sự kiện click trên các phím của bàn phím ảo
+document.getElementById('virtual-keypad').addEventListener('click', function(event) {
+    const target = event.target;
+    const inputField = document.getElementById('student-id');
+    const maxLength = 15;
+
+    // Đảm bảo click vào nút keypad-key
+    if (target.classList.contains('keypad-key')) {
+        const currentId = inputField.value;
+
+        if (target.id === 'keypad-backspace') {
+            inputField.value = currentId.slice(0, -1);
+        } else if (target.id === 'keypad-enter') {
+            searchStudentImage();
+        } else if (currentId.length < maxLength && target.textContent.match(/^[0-9]$/)) {
+            inputField.value += target.textContent;
+        }
+        
+        inputField.focus();
+    }
 });
