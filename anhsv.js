@@ -123,32 +123,3 @@ document.getElementById('back-button').addEventListener('click', function() {
     // Tự động focus vào ô nhập liệu khi quay lại
     document.getElementById('student-id').focus();
 });
-
-// Xử lý sự kiện click nút "Phím" để ẩn/hiện bàn phím ảo
-document.getElementById('keypad-toggle-button').addEventListener('click', function() {
-    document.getElementById('virtual-keypad').classList.toggle('visible');
-    // Tự động focus vào ô input sau khi hiển thị bàn phím ảo
-    document.getElementById('student-id').focus();
-});
-
-// Xử lý sự kiện click trên các phím của bàn phím ảo
-document.getElementById('virtual-keypad').addEventListener('click', function(event) {
-    const target = event.target;
-    const inputField = document.getElementById('student-id');
-    const maxLength = 15;
-
-    // Đảm bảo click vào nút keypad-key
-    if (target.classList.contains('keypad-key')) {
-        const currentId = inputField.value;
-
-        if (target.id === 'keypad-backspace') {
-            inputField.value = currentId.slice(0, -1);
-        } else if (target.id === 'keypad-enter') {
-            searchStudentImage();
-        } else if (currentId.length < maxLength && target.textContent.match(/^[0-9]$/)) {
-            inputField.value += target.textContent;
-        }
-        
-        inputField.focus();
-    }
-});
