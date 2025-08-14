@@ -22,10 +22,14 @@ body {
 }
 
 /* Tiêu đề */
-h1 {
+h1,h2 {
     color: #000000;
-    margin-bottom: 2rem;
-    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+}
+h2{
+    color: red;
+    font-weight: 900;
 }
 
 /* Form tìm kiếm */
@@ -114,4 +118,87 @@ button:hover {
 }
 .input-buttons button:hover {
     background-color: #ff0000;
+}
+
+/* Bổ sung CSS cho nút Phím */
+.input-buttons #keypad-toggle-button {
+    background-color: #6c757d;
+    color: white;
+}
+.input-buttons #keypad-toggle-button:hover {
+    background-color: #5a6268;
+}
+
+/* Bàn phím số ảo */
+#virtual-keypad {
+    display: none; /* Mặc định ẩn */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    margin-top: 15px;
+    padding: 0; /* Xóa padding để loại bỏ khung viền */
+    background-color: transparent; /* Đặt nền trong suốt */
+    box-shadow: none; /* Xóa bóng đổ */
+}
+
+#virtual-keypad.visible {
+    display: grid; /* Hiển thị khi có class 'visible' */
+}
+
+.keypad-key {
+    padding: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: #ffffff; /* Đặt màu nền là đen */
+    color: rgb(0, 0, 0); /* Đặt màu chữ là trắng để dễ nhìn */
+    border: none; /* Xóa viền */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    user-select: none;
+}
+.keypad-key:hover {
+    background-color: #6ef55a; /* Màu nền khi di chuột qua */
+    transform: none;
+}
+.keypad-key:active {
+    transform: scale(0.95);
+}
+#keypad-backspace {
+    background-color: #dc3545;
+    color: white;
+}
+#keypad-backspace:hover {
+    background-color: #ffb8b8;
+}
+#keypad-enter {
+    background-color: #007bff;
+    color: white;
+}
+#keypad-enter:hover {
+    background-color: #0069d9;
+}
+
+/* Responsive: Căn chỉnh lại giao diện cho màn hình nhỏ */
+@media (max-width: 480px) {
+    .main-container {
+        padding: 1rem;
+    }
+    h1 {
+        font-size: 1.5rem;
+    }
+    .input-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .input-buttons button {
+        width: 100%;
+    }
+    #virtual-keypad {
+        gap: 8px;
+    }
+    .keypad-key {
+        padding: 12px;
+        font-size: 1rem;
+    }
 }
