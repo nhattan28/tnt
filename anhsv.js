@@ -152,14 +152,3 @@ document.getElementById('virtual-keypad').addEventListener('click', function(eve
         inputField.focus();
     }
 });
-
-// Ngăn bàn phím mặc định của điện thoại hiện lên và hiển thị bàn phím ảo
-const studentIdInput = document.getElementById('student-id');
-studentIdInput.addEventListener('focus', function() {
-    this.readOnly = true;
-    document.getElementById('virtual-keypad').classList.add('visible');
-});
-
-studentIdInput.addEventListener('blur', function() {
-    this.readOnly = false;
-});
