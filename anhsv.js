@@ -127,6 +127,8 @@ document.getElementById('back-button').addEventListener('click', function() {
 // Xử lý sự kiện click nút "Phím" để ẩn/hiện bàn phím ảo
 document.getElementById('keypad-toggle-button').addEventListener('click', function() {
     document.getElementById('virtual-keypad').classList.toggle('visible');
+    // Tự động focus vào ô input sau khi hiển thị bàn phím ảo
+    document.getElementById('student-id').focus();
 });
 
 // Xử lý sự kiện click trên các phím của bàn phím ảo
@@ -149,4 +151,15 @@ document.getElementById('virtual-keypad').addEventListener('click', function(eve
         
         inputField.focus();
     }
+});
+
+// Ngăn bàn phím mặc định của điện thoại hiện lên và hiển thị bàn phím ảo
+const studentIdInput = document.getElementById('student-id');
+studentIdInput.addEventListener('focus', function() {
+    this.readOnly = true;
+    document.getElementById('virtual-keypad').classList.add('visible');
+});
+
+studentIdInput.addEventListener('blur', function() {
+    this.readOnly = false;
 });
