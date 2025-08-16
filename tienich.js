@@ -121,7 +121,7 @@ const utilities =
         desc: "Tóm tắt nội dung web bằng AI – tiết kiệm thời gian đọc lướt."
       
     },
-    {
+    /*{
         url: "https://mydtu.duytan.edu.vn/Signin.aspx",
         title: "Mydtu",
         desc: "Cổng thông tin sinh viên Duy Tân."
@@ -140,7 +140,7 @@ const utilities =
         url: "https://gdtcqp.duytan.edu.vn/",
         title: "TTGD thể chất - Quốc phòng",
         desc: "Thông tin về các môn thể chất và quốc phòng."
-    }
+    }*/
 ];
 const itemsPerPage = 15;
 let currentPage = 1;
