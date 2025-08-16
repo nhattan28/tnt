@@ -54,6 +54,11 @@
         text-align: center;
         margin-top: 2rem;
       }
+
+      /* Thêm CSS để bảng cuộn được trên màn hình nhỏ */
+      .table-container-responsive {
+        overflow-x: auto;
+      }
     </style>
   </head>
   <body>
@@ -63,40 +68,69 @@
 
     <main class="container">
       <section class="instruction-section">
-
         <h2>Định Dạng File Excel</h2>
         <p>
           Để trang website có thể đọc dữ liệu chính xác, file Excel của bạn phải
-          có tối thiểu ba cột với các tiêu đề sau:
+          có tối thiểu ba cột với các tiêu đề sau: Mã Lớp, Số ĐVHT, Điểm gốc.
         </p>
-        <table class="table-format">
-          <thead>
-            <tr>
-              <th>Mã Lớp</th>
-              <th>Số ĐVHT</th>
-              <th>Điểm gốc</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>CS 201 HF1</td>
-              <td>2</td>
-              <td>8.5</td>
-            </tr>
-            <tr>
-              <td>EVR 205 BJ</td>
-              <td>2</td>
-              <td>8.9</td>
-            </tr>
-            <tr>
-              <td>CHE 101 D1</td>
-              <td>3</td>
-              <td>8.0</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-container-responsive">
+          <table class="table-format">
+            <thead>
+              <tr>
+                <th>Mã Môn</th>
+                <th>Mã Lớp</th>
+                <th>Hình thức</th>
+                <th>Tên Môn</th>
+                <th>Số ĐVHT</th>
+                <th>Loại ĐVHT</th>
+                <th>Điểm gốc</th>
+                <th>Điểm chữ</th>
+                <th>Điểm Quy đổi</th>
+                <th>Điểm tích lũy</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>CS 201</td>
+                <td>CS 201 AK1</td>
+                <td>LEC</td>
+                <td>Tin Học Ứng Dụng</td>
+                <td>2</td>
+                <td>Tín Chỉ</td>
+                <td>8.50</td>
+                <td>A</td>
+                <td>4.00</td>
+                <td>8.00</td>
+              </tr>
+              <tr>
+                <td>HIS 362</td>
+                <td>HIS 362 AF</td>
+                <td>LEC</td>
+                <td>Lịch Sử Đảng Cộng Sản Việt Nam</td>
+                <td>2</td>
+                <td>Tín Chỉ</td>
+                <td>8.80</td>
+                <td>A</td>
+                <td>4.00</td>
+                <td>8.00</td>
+              </tr>
+              <tr>
+                <td>DTE-IT 102</td>
+                <td>DTE-IT 102 A</td>
+                <td>LEC</td>
+                <td>Hướng Nghiệp 1</td>
+                <td>1</td>
+                <td>Tín Chỉ</td>
+                <td>8.9</td>
+                <td>A</td>
+                <td>4.00</td>
+                <td>4.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <p>
-          Lưu ý: Bạn có thể đặt các cột/hàng này ở bất kỳ vị trí nào trong file
+          Lưu ý: Bạn có thể đặt các cột này ở bất kỳ vị trí nào trong file
           Excel, nhưng tiêu đề phải chính xác để trang website nhận diện được.
         </p>
       </section>
