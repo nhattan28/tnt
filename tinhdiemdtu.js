@@ -93,10 +93,10 @@ function calculate() {
   document.getElementById("totalCredits").innerText =
     `📚 Tổng số tín chỉ: ${totalCredits}`;
   document.getElementById("avg10").innerText =
-    `📘 Trung bình gốc (thang 10): ${avg10}`;
+    `📘 Trung bình gốc (thang điểm 10): ${avg10}`;
   document.getElementById("avg4").innerText =
-    `📗 Trung bình tích lũy (thang 4): ${avg4}`;
-  document.getElementById("rank").innerText = `🏆 Xếp loại cuối: ${rank}`;
+    `📗 Trung bình tích lũy (thang điểm 4): ${avg4}`;
+  document.getElementById("rank").innerText = `🏆 Xếp loại học lực đối với sinh viên năm cuối: ${rank}`;
 
   document.getElementById("input-page").classList.add("hidden");
   document.getElementById("result-page").classList.remove("hidden");
@@ -105,4 +105,5 @@ function calculate() {
 function goBack() {
   document.getElementById("input-page").classList.remove("hidden");
   document.getElementById("result-page").classList.add("hidden");
+
 }
