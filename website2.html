@@ -75,7 +75,7 @@
 
     .modal-content h3 {
         margin-top: 0;
-        font-size: 2em;
+        font-size: 4em; /* Đã thay đổi từ 2em thành 4em */
         text-shadow: 0 0 10px #0f0;
     }
     
@@ -130,7 +130,6 @@
   <div id="initial-modal">
     <div class="modal-content">
       <h3 id="modal-greeting"></h3>
-      <button id="modal-ok">Bắt đầu</button>
     </div>
   </div>
   <img id="haunting-image" src="anhnenma.png" alt="Ảnh ma">
@@ -139,9 +138,26 @@
   <script>
     const initialModal = document.getElementById('initial-modal');
     const modalGreeting = document.getElementById('modal-greeting');
-    const modalOk = document.getElementById('modal-ok');
     const hauntingImage = document.getElementById('haunting-image');
     const jumpscareAudio = document.getElementById('jumpscare-audio');
+
+    // Hàm tạo hiệu ứng gõ chữ
+    function typeEffect(element, text, speed) {
+      return new Promise(resolve => {
+        let i = 0;
+        element.textContent = ''; // Xóa nội dung cũ
+        function type() {
+          if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+          } else {
+            resolve();
+          }
+        }
+        type();
+      });
+    }
 
     // Cập nhật lời chào theo giờ địa phương
     function updateGreeting() {
@@ -157,7 +173,7 @@
         } else {
             greeting = "Chúc ngủ ngon!";
         }
-        modalGreeting.textContent = greeting;
+        return greeting;
     }
     
     // Xử lý khi nút Bắt đầu được nhấn
@@ -168,9 +184,6 @@
         // Hiển thị ảnh và phát nhạc ngay lập tức
         showImage();
     }
-    
-    // Gắn sự kiện cho nút OK
-    modalOk.addEventListener('click', startSequence);
     
     // Hiển thị ảnh và phát nhạc
     function showImage() {
@@ -183,8 +196,12 @@
     }
 
     // Khởi động khi tải trang
-    window.addEventListener('load', () => {
-      updateGreeting();
+    window.addEventListener('load', async () => {
+      const greetingText = updateGreeting();
+      await typeEffect(modalGreeting, greetingText, 70); // Tốc độ gõ 70ms/chữ
+      
+      // Chờ 2 giây sau khi gõ xong
+      setTimeout(startSequence, 2000);
     });
   </script>
 </body>
