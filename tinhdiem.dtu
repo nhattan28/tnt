@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tính Điểm Tích Lũy ĐH Duy Tân</title>
+  <style>
+    body {font-family: Arial, sans-serif;margin: 0;padding: 0;background: #f4f6f9;color: #333;}
+    header {background: #004aad;color: white;text-align: center;padding: 15px;font-size: 20px;font-weight: bold;}
+    .container {max-width: 900px;margin: 30px auto;padding: 20px;background: white;border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+    h2 {text-align: center;color: #004aad;margin-bottom: 20px;}
+    table {width: 100%;border-collapse: collapse;margin-bottom: 20px;}
+    table th, table td {border: 1px solid #ddd;padding: 10px;text-align: center;}
+    table th {background: #004aad;color: white;}
+    input[type="number"], input[type="text"] {
+      padding: 6px;width: 100px;border: 1px solid #ccc;border-radius: 6px;text-align: center;
+    }
+    .btn {background: #004aad;color: white;padding: 8px 16px;margin: 5px;border: none;border-radius: 6px;
+      cursor: pointer;font-size: 14px;transition: 0.3s;}
+    .btn:hover {background: #0066ff;}
+    .delete-btn {background: #dc3545;}
+    .delete-btn:hover {background: #ff4d4d;}
+    .result-card {padding: 20px;border-radius: 12px;background: #f9fbff;box-shadow: 0 4px 12px rgba(0,0,0,0.1);text-align: center;}
+    .result-card h3 {margin: 10px 0;color: #004aad;}
+    .back-btn {margin-top: 20px;display: inline-block;background: #ccc;color: black;padding: 10px 20px;
+      border-radius: 6px;cursor: pointer;text-decoration: none;transition: 0.3s;}
+    .back-btn:hover {background: #aaa;}
+  </style>
+</head>
+<body>
+  <header>TÍNH ĐIỂM TÍCH LŨY - ĐẠI HỌC DUY TÂN</header>
+
+  <!-- Nhập liệu -->
+  <div class="container" id="input-page">
+    <h2>Nhập Điểm Các Học Phần</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Môn học</th>
+          <th>Số tín chỉ</th>
+          <th>Điểm gốc (thang 10)</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="subjects">
+        <tr>
+          <td><input type="text" placeholder="Tên môn"></td>
+          <td><input type="number" min="1"></td>
+          <td><input type="number" step="0.1" min="0" max="10"></td>
+          <td><button class="btn delete-btn" onclick="deleteRow(this)">Xóa</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn" onclick="addRow()">+ Thêm Môn</button>
+    <button class="btn" onclick="calculate()">Xem Kết Quả</button>
+  </div>
+
+  <!-- Kết quả -->
+  <div class="container" id="result-page" style="display:none;">
+    <div class="result-card">
+      <h2>KẾT QUẢ TÍNH TOÁN</h2>
+      <h3 id="avg10"></h3>
+      <h3 id="avg4"></h3>
+      <h3 id="rank"></h3>
+      <a class="back-btn" onclick="goBack()">⬅ Quay lại nhập điểm</a>
+    </div>
+  </div>
+
+  <script>
+    function addRow() {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><input type="text" placeholder="Tên môn"></td>
+        <td><input type="number" min="1"></td>
+        <td><input type="number" step="0.1" min="0" max="10"></td>
+        <td><button class="btn delete-btn" onclick="deleteRow(this)">Xóa</button></td>
+      `;
+      document.getElementById("subjects").appendChild(row);
+    }
+
+    function deleteRow(btn) {
+      const row = btn.parentNode.parentNode;
+      const tbody = document.getElementById("subjects");
+      if (tbody.rows.length > 1) { // ít nhất giữ 1 dòng
+        tbody.removeChild(row);
+      } else {
+        alert("Phải có ít nhất 1 môn học!");
+      }
+    }
+
+    function convertTo4(score10) {
+      if (score10 >= 9.5) return 4.0;
+      if (score10 >= 8.5) return 4.0;
+      if (score10 >= 8.0) return 3.65;
+      if (score10 >= 7.5) return 3.33;
+      if (score10 >= 7.0) return 3.0;
+      if (score10 >= 6.5) return 2.65;
+      if (score10 >= 6.0) return 2.33;
+      if (score10 >= 5.5) return 2.0;
+      if (score10 >= 4.5) return 1.65;
+      if (score10 >= 4.0) return 1.0;
+      return 0.0;
+    }
+
+    function getRank(avg4) {
+      if (avg4 >= 3.6) return "Xuất sắc";
+      if (avg4 >= 3.2) return "Giỏi";
+      if (avg4 >= 2.5) return "Khá";
+      if (avg4 >= 2.0) return "Trung bình";
+      return "Yếu/Kém";
+    }
+
+    function calculate() {
+      const rows = document.querySelectorAll("#subjects tr");
+      let totalCredits = 0, sum10 = 0, sum4 = 0;
+
+      rows.forEach(r => {
+        const credits = parseFloat(r.children[1].children[0].value) || 0;
+        const score10 = parseFloat(r.children[2].children[0].value) || 0;
+        const score4 = convertTo4(score10);
+
+        totalCredits += credits;
+        sum10 += score10 * credits;
+        sum4 += score4 * credits;
+      });
+
+      if (totalCredits === 0) {
+        alert("Vui lòng nhập số tín chỉ hợp lệ!");
+        return;
+      }
+
+      const avg10 = (sum10 / totalCredits).toFixed(2);
+      const avg4 = (sum4 / totalCredits).toFixed(2);
+
+      document.getElementById("avg10").innerText = "📘 Trung bình gốc (thang 10): " + avg10;
+      document.getElementById("avg4").innerText = "📗 Trung bình tích lũy (thang 4): " + avg4;
+      document.getElementById("rank").innerText = "🏆 Xếp loại cuối: " + getRank(avg4);
+
+      document.getElementById("input-page").style.display = "none";
+      document.getElementById("result-page").style.display = "block";
+    }
+
+    function goBack() {
+      document.getElementById("input-page").style.display = "block";
+      document.getElementById("result-page").style.display = "none";
+    }
+  </script>
+</body>
+</html>
