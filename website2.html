@@ -75,7 +75,7 @@
 
     .modal-content h3 {
         margin-top: 0;
-        font-size: 4em; /* Đã thay đổi từ 2em thành 4em */
+        font-size: 4em;
         text-shadow: 0 0 10px #0f0;
     }
     
@@ -130,6 +130,8 @@
   <div id="initial-modal">
     <div class="modal-content">
       <h3 id="modal-greeting"></h3>
+      <p id="modal-instruction"></p>
+      <button id="modal-ok">Bắt đầu</button>
     </div>
   </div>
   <img id="haunting-image" src="anhnenma.png" alt="Ảnh ma">
@@ -138,6 +140,8 @@
   <script>
     const initialModal = document.getElementById('initial-modal');
     const modalGreeting = document.getElementById('modal-greeting');
+    const modalInstruction = document.getElementById('modal-instruction');
+    const modalOk = document.getElementById('modal-ok');
     const hauntingImage = document.getElementById('haunting-image');
     const jumpscareAudio = document.getElementById('jumpscare-audio');
 
@@ -145,7 +149,7 @@
     function typeEffect(element, text, speed) {
       return new Promise(resolve => {
         let i = 0;
-        element.textContent = ''; // Xóa nội dung cũ
+        element.textContent = '';
         function type() {
           if (i < text.length) {
             element.textContent += text.charAt(i);
@@ -178,10 +182,7 @@
     
     // Xử lý khi nút Bắt đầu được nhấn
     function startSequence() {
-        // Ẩn modal
         initialModal.style.display = 'none';
-        
-        // Hiển thị ảnh và phát nhạc ngay lập tức
         showImage();
     }
     
@@ -197,11 +198,19 @@
 
     // Khởi động khi tải trang
     window.addEventListener('load', async () => {
+      // Ẩn nút và lời nhắc ban đầu
+      modalOk.style.display = 'none';
+      modalInstruction.style.display = 'none';
+
+      // Gõ lời chào
       const greetingText = updateGreeting();
-      await typeEffect(modalGreeting, greetingText, 70); // Tốc độ gõ 70ms/chữ
-      
-      // Chờ 2 giây sau khi gõ xong
-      setTimeout(startSequence, 2000);
+      await typeEffect(modalGreeting, greetingText, 280);
+
+      // Sau khi gõ xong lời nhắc thì hiển thị nút "Bắt đầu"
+      modalOk.style.display = 'inline-block';
+
+      // Gắn sự kiện click cho nút "Bắt đầu"
+      modalOk.addEventListener('click', startSequence);
     });
   </script>
 </body>
