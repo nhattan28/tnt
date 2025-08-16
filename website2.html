@@ -7,16 +7,7 @@
   <script>
     // Ngăn người dùng mở công cụ nhà phát triển
     document.addEventListener('keydown', function(e) {
-      // Chặn F12
-      if (e.key === 'F12' || e.keyCode === 123) {
-        e.preventDefault();
-      }
-      // Chặn Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
-      if (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'j' || e.key === 'c' || e.key === 'u')) {
-        e.preventDefault();
-      }
-      // Chặn Ctrl+S
-      if (e.ctrlKey && e.key === 's') {
+      if (e.key === 'F12' || e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'j' || e.key === 'c' || e.key === 'u')) || (e.ctrlKey && e.key === 's')) {
         e.preventDefault();
       }
     });
@@ -121,12 +112,37 @@
       z-index: 200;
       display: none;
     }
+
+    /* CSS cho mũi tên được cố định ở vị trí dưới nút menu */
+    #instruction-arrow {
+      position: fixed;
+      top: 1px;
+      left: 1px;
+      width: 50px;
+      height: auto;
+      transform: rotate(deg);
+      animation: pulse 1s infinite;
+      z-index: 400;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1) rotate(180deg); }
+        50% { transform: scale(1.1) rotate(180deg); }
+        100% { transform: scale(1) rotate(180deg); }
+    }                           
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
+  <div id="red-menu-button">
+    <div id="red-menu-button-center"></div>
+  </div>
+  <img id="instruction-arrow" src="muiten.png" alt="Mũi tên">
+
   <div id="initial-modal">
     <div class="modal-content">
       <h3 id="modal-greeting"></h3>
@@ -136,7 +152,6 @@
   </div>
   <img id="haunting-image" src="anhnenma.png" alt="Ảnh ma">
   <audio id="jumpscare-audio" src="nhackinhdi.mp3" preload="auto"></audio>
-
   <script>
     const initialModal = document.getElementById('initial-modal');
     const modalGreeting = document.getElementById('modal-greeting');
@@ -144,23 +159,25 @@
     const modalOk = document.getElementById('modal-ok');
     const hauntingImage = document.getElementById('haunting-image');
     const jumpscareAudio = document.getElementById('jumpscare-audio');
+    const instructionArrow = document.getElementById('instruction-arrow');
+    const redMenuButton = document.getElementById('red-menu-button');
 
     // Hàm tạo hiệu ứng gõ chữ
     function typeEffect(element, text, speed) {
-      return new Promise(resolve => {
-        let i = 0;
-        element.textContent = '';
-        function type() {
-          if (i < text.length) {
-            element.textContent += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-          } else {
-            resolve();
-          }
-        }
-        type();
-      });
+        return new Promise(resolve => {
+            let i = 0;
+            element.textContent = '';
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    resolve();
+                }
+            }
+            type();
+        });
     }
 
     // Cập nhật lời chào theo giờ địa phương
@@ -183,35 +200,43 @@
     // Xử lý khi nút Bắt đầu được nhấn
     function startSequence() {
         initialModal.style.display = 'none';
+        // Xóa dòng ẩn mũi tên và nút menu tại đây
         showImage();
     }
     
     // Hiển thị ảnh và phát nhạc
     function showImage() {
-      hauntingImage.style.display = 'block';
-      setTimeout(() => {
-        hauntingImage.style.opacity = '1';
-      }, 100);
+        hauntingImage.style.display = 'block';
+        setTimeout(() => {
+            hauntingImage.style.opacity = '1';
+        }, 100);
 
-      jumpscareAudio.play();
+        jumpscareAudio.play();
     }
 
     // Khởi động khi tải trang
     window.addEventListener('load', async () => {
-      // Ẩn nút và lời nhắc ban đầu
-      modalOk.style.display = 'none';
-      modalInstruction.style.display = 'none';
+        // Ẩn ban đầu các phần tử cần thiết
+        modalOk.style.display = 'none';
+        modalInstruction.style.display = 'none';
+        initialModal.style.display = 'none';
+        
+        // Hiển thị mũi tên và nút menu ngay lập tức
+        instructionArrow.style.opacity = '1';
+        redMenuButton.style.opacity = '1';
 
-      // Gõ lời chào
-      const greetingText = updateGreeting();
-      await typeEffect(modalGreeting, greetingText, 280);
-
-      // Sau khi gõ xong lời nhắc thì hiển thị nút "Bắt đầu"
-      modalOk.style.display = 'inline-block';
-
-      // Gắn sự kiện click cho nút "Bắt đầu"
-      modalOk.addEventListener('click', startSequence);
+        // Đợi 5 giây rồi mới bắt đầu gõ chữ và hiển thị modal
+        setTimeout(async () => {
+            // Xóa dòng ẩn mũi tên và nút menu tại đây
+            initialModal.style.display = 'flex';
+            const greetingText = updateGreeting();
+            await typeEffect(modalGreeting, greetingText, 70); 
+            modalOk.style.display = 'inline-block';
+        }, 5000);
     });
-  </script>
+
+    // Gắn sự kiện click cho nút "Bắt đầu"
+    modalOk.addEventListener('click', startSequence);
+</script>
 </body>
 </html>
