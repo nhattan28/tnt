@@ -162,6 +162,11 @@
     const instructionArrow = document.getElementById('instruction-arrow');
     const redMenuButton = document.getElementById('red-menu-button');
 
+    // Thêm lắng nghe sự kiện khi nhạc kết thúc
+    jumpscareAudio.addEventListener('ended', function() {
+        window.location.href = 'gioithieu.html';
+    });
+
     // Hàm tạo hiệu ứng gõ chữ
     function typeEffect(element, text, speed) {
         return new Promise(resolve => {
@@ -225,7 +230,7 @@
         instructionArrow.style.opacity = '1';
         redMenuButton.style.opacity = '1';
 
-        // Đợi 0 giây rồi mới bắt đầu gõ chữ và hiển thị modal
+        // Đợi 5 giây rồi mới bắt đầu gõ chữ và hiển thị modal
         setTimeout(async () => {
             // Xóa dòng ẩn mũi tên và nút menu tại đây
             initialModal.style.display = 'flex';
@@ -240,4 +245,3 @@
 </script>
 </body>
 </html>
-
