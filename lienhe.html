@@ -13,19 +13,25 @@
         html, body {
             margin: 0;
             padding: 0;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
             font-family: 'Inter', sans-serif;
             color: #1e293b;
         }
 
+        /* Khóa cuộn chỉ trên màn hình lớn (ví dụ: màn hình rộng hơn 768px) */
+        @media (min-width: 768px) {
+            html, body {
+                overflow: hidden;
+            }
+        }
+        
         /* Định nghĩa style cho body */
         .main-body-style {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 97vh;
             padding: 0.5rem;
             background: linear-gradient(to bottom right, #748499, #e0e7ff);
         }
@@ -39,7 +45,7 @@
 
         /* CSS cho main content card */
         .main-content-card {
-            padding: 1.5rem;
+            padding: 1rem;
             border-radius: 1rem;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             max-width: 56rem;
@@ -141,12 +147,10 @@
     </style>
 </head>
 <body class="main-body-style">
-    <!-- Main container for all content, with classes moved to style block -->
     <div class="main-content-card">
         <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-6 drop-shadow-sm">Thông Tin Liên Hệ</h1>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-6">
-            <!-- Personal Information Card -->
             <div class="card-animation sub-card">
                 <h2 class="text-xl font-semibold mb-4 text-gray-700">Thông Tin Cá Nhân</h2>
                 <div class="space-y-3 text-gray-600">
@@ -155,11 +159,9 @@
                 </div>
             </div>
             
-            <!-- Social Media Links Card -->
             <div class="card-animation sub-card">
                 <h2 class="text-xl font-semibold mb-4 text-gray-700">Mạng Xã Hội</h2>
                 <div class="flex flex-wrap gap-4 text-blue-600">
-                    <!-- Telegram Link -->
                     <a href="https://t.me/babycuaaidangyeu" target="_blank" class="social-link">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 8.85l-7.38 3.51c-.48.23-.97 0-.97-.52 0-.2.12-.39.29-.5l2.67-1.87c.2-.14.47-.23.75-.25l.8-.02c.3-.01.55.23.53.53 0 .04-.01.07-.02.1l-.8 8.01c-.04.42.34.8.76.76l.1-.01c.28-.02.55-.1.74-.26l3.51-2.67c.23-.17.43-.37.56-.63l1.87-2.67c.17-.23.23-.5-.14-.64z"/>
@@ -167,7 +169,6 @@
                         <span>Telegram</span>
                     </a>
                     
-                    <!-- Gmail Link -->
                     <a href="mailto:nhattan2032810@gmail.com" class="social-link">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/>
@@ -178,7 +179,6 @@
             </div>
         </div>
         
-        <!-- Map -->
         <div class="w-full h-80 rounded-2xl overflow-hidden shadow-lg border border-gray-200 relative">
             <h2 class="text-xl font-semibold p-4 text-center text-gray-700 bg-gray-50 border-b border-gray-200">Vị trí của tôi</h2>
             <iframe 
@@ -186,12 +186,11 @@
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3834.0202271842426!2d108.20455437466827!3d16.06456728461749!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314219c629524581%3A0x6a0c5c40e53a9926!2sDuy%20Tan%20University!5e0!3m2!1sen!2svi!4v1698293751767!5m2!1sen!2svi" 
                 width="100%" 
                 height="100%" 
-                style="border:0;" 
+                style="border:0; overflow-x: hidden;"
                 allowfullscreen="" 
                 loading="lazy" 
                 referrerpolicy="no-referrer-when-downgrade">
             </iframe>
-            <!-- Find Location Button and Message Container -->
             <div id="location-status-container" class="absolute bottom-4 left-4 right-4 flex flex-col items-start space-y-2">
                 <button id="findLocationBtn" class="location-button">
                     Vị trí
@@ -199,10 +198,8 @@
                 <p id="userLocationStatus" class="text-red-600 font-medium"></p>
             </div>
         </div>
-        <!-- Address Display -->
         <p id="userLocationText" class="text-center mt-4 text-gray-600 font-medium hidden">
-            <!-- Address will be displayed here -->
-        </p>
+            </p>
     </div>
 
     <script>
