@@ -79,18 +79,19 @@ function clearAllRows() {
   });
 }
 
+// Cập nhật hàm convertTo4() để sử dụng bảng quy đổi mới
 function convertTo4(score10) {
-  if (score10 >= 9.5) return 4.0;
-  if (score10 >= 8.5) return 4.0;
-  if (score10 >= 8.0) return 3.65;
-  if (score10 >= 7.5) return 3.33;
-  if (score10 >= 7.0) return 3.0;
-  if (score10 >= 6.5) return 2.65;
-  if (score10 >= 6.0) return 2.33;
-  if (score10 >= 5.5) return 2.0;
-  if (score10 >= 4.5) return 1.65;
-  if (score10 >= 4.0) return 1.0;
-  return 0.0;
+  if (score10 >= 9.5) return 4.0; // A+
+  if (score10 >= 8.5) return 4.0; // A
+  if (score10 >= 8.0) return 3.65; // A-
+  if (score10 >= 7.5) return 3.33; // B+
+  if (score10 >= 7.0) return 3.0; // B
+  if (score10 >= 6.5) return 2.65; // B-
+  if (score10 >= 6.0) return 2.33; // C+
+  if (score10 >= 5.5) return 2.0; // C
+  if (score10 >= 4.5) return 1.65; // C-
+  if (score10 >= 4.0) return 1.0; // D
+  return 0.0; // F
 }
 
 function getRank(avg4) {
@@ -170,7 +171,7 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
     }
     
     // Tìm vị trí của các cột dựa trên tiêu đề ở bất kỳ dòng nào
-    let subjectCodeIndex = -1, creditsIndex = -1, scoreIndex = -1;
+    let subjectCodeIndex = -1, creditsIndex = -1, scoreIndex = -1, letterGradeIndex = -1;
     let dataStartIndex = -1;
 
     for (let i = 0; i < jsonData.length; i++) {
@@ -179,16 +180,17 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
         subjectCodeIndex = headers.findIndex(header => header && header.toString().trim() === 'Mã Lớp');
         creditsIndex = headers.findIndex(header => header && header.toString().trim() === 'Số ĐVHT');
         scoreIndex = headers.findIndex(header => header && header.toString().trim() === 'Điểm gốc');
+        letterGradeIndex = headers.findIndex(header => header && header.toString().trim() === 'Điểm chữ');
       }
 
-      if (subjectCodeIndex !== -1 && creditsIndex !== -1 && scoreIndex !== -1) {
+      if (subjectCodeIndex !== -1 && creditsIndex !== -1 && scoreIndex !== -1 && letterGradeIndex !== -1) {
         dataStartIndex = i + 1;
         break;
       }
     }
 
     if (dataStartIndex === -1) {
-      showModal("Tệp Excel không có đủ các cột 'Mã Lớp', 'Số ĐVHT', và 'Điểm gốc'. Vui lòng kiểm tra lại tiêu đề cột.");
+      showModal("Tệp Excel không có đủ các cột 'Mã Lớp', 'Số ĐVHT', 'Điểm gốc', và 'Điểm chữ'. Vui lòng kiểm tra lại tiêu đề cột.");
       return;
     }
     
@@ -200,6 +202,7 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
     
     const existingSubjectCodes = new Set();
     let hasAddedData = false;
+    const allowedGrades = new Set(['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D']);
 
     // Bắt đầu đọc dữ liệu từ hàng sau dòng tiêu đề
     for (let i = dataStartIndex; i < jsonData.length; i++) {
@@ -208,8 +211,10 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
         const subjectCode = row[subjectCodeIndex] ? row[subjectCodeIndex].toString().trim() : '';
         const credits = parseFloat(row[creditsIndex]) || 0;
         const score10 = parseFloat(row[scoreIndex]) || 0;
-        
-        if (subjectCode && credits > 0 && score10 >= 0 && score10 <= 10) {
+        const letterGrade = row[letterGradeIndex] ? row[letterGradeIndex].toString().trim().toUpperCase() : '';
+
+        // Check if the letter grade is in the allowed set
+        if (allowedGrades.has(letterGrade) && subjectCode && credits > 0 && score10 >= 0 && score10 <= 10) {
           const codeToCompare = subjectCode.toUpperCase();
           if (existingSubjectCodes.has(codeToCompare)) {
             console.warn(`Mã môn "${subjectCode}" bị trùng lặp trong file và đã bị bỏ qua.`);
@@ -218,6 +223,8 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
           existingSubjectCodes.add(codeToCompare);
           addRow(subjectCode, credits, score10);
           hasAddedData = true;
+        } else {
+            console.log(`Bỏ qua môn ${subjectCode} vì điểm chữ không hợp lệ: ${letterGrade}`);
         }
       }
     }
