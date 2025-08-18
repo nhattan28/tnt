@@ -1,3 +1,6 @@
+// Biến để lưu trạng thái trang hiện tại, giúp nút "Quay lại" hoạt động đúng
+let currentPage = 'input-page';
+
 // Function để hiển thị modal thông báo tùy chỉnh
 function showModal(message, type = 'alert', onConfirm = null) {
   const modal = document.getElementById('custom-modal');
@@ -135,12 +138,12 @@ function calculate() {
   const rank = getRank(parseFloat(avg4));
 
   document.getElementById("totalCredits").innerText =
-    `📚 Tổng số tín chỉ: ${totalCredits}`;
+    `📚 Tổng số Đơn vị Học tập (ĐVHT) toàn Khóa học: ${totalCredits}`;
   document.getElementById("avg10").innerText =
-    `📘 Trung bình gốc (thang điểm 10): ${avg10}`;
+    `📘 Trung bình Điểm gốc toàn Khóa học: ${avg10}`;
   document.getElementById("avg4").innerText =
-    `📗 Trung bình tích lũy (thang điểm 4): ${avg4}`;
-  document.getElementById("rank").innerText = `🏆 Xếp loại học lực đối với sinh viên năm cuối: ${rank}`;
+    `📗 Điểm Trung bình Tích lũy toàn Khóa học: ${avg4}`;
+  document.getElementById("rank").innerText = `🏆 Xếp loại học lực đối với sinh viên năm cuối: ${rank}`;
 
   document.getElementById("input-page").classList.add("hidden");
   document.getElementById("result-page").classList.remove("hidden");
@@ -237,3 +240,72 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
   };
   reader.readAsArrayBuffer(file);
 });
+
+// Hàm để hiển thị trang nhập liệu nhanh và xóa dữ liệu cũ
+function showFastInputPage() {
+    clearAllRowsWithoutConfirm();
+    document.getElementById("input-page").classList.add("hidden");
+    document.getElementById("result-page").classList.add("hidden");
+    document.getElementById("fast-input-page").classList.remove("hidden");
+}
+
+// Hàm để hiển thị trang nhập liệu chính và xóa dữ liệu cũ
+function showInputPage() {
+    fastClear();
+    document.getElementById("fast-input-page").classList.add("hidden");
+    document.getElementById("result-page").classList.add("hidden");
+    document.getElementById("input-page").classList.remove("hidden");
+}
+
+function fastCalculate() {
+    const totalCredits = parseFloat(document.getElementById("fastTotalCredits").value) || 0;
+    const avg10Input = document.getElementById("fastAvg10");
+    const avg4Input = document.getElementById("fastAvg4");
+    
+    let avg10 = parseFloat(avg10Input.value);
+    let avg4 = parseFloat(avg4Input.value);
+
+    // Kiểm tra và giới hạn cho điểm gốc (thang 10)
+    if (isNaN(avg10) || avg10 < 0 || avg10 > 10) {
+        showModal("Trung bình gốc (thang điểm 10) phải nằm trong khoảng từ 0.00 đến 10.00.");
+        return;
+    }
+    
+    // Kiểm tra và giới hạn cho điểm tích lũy (thang 4)
+    if (isNaN(avg4) || avg4 < 0 || avg4 > 4) {
+        showModal("Trung bình tích lũy (thang điểm 4) phải nằm trong khoảng từ 0.00 đến 4.00.");
+        return;
+    }
+
+    const rank = getRank(avg4);
+
+    document.getElementById("totalCredits").innerText = `📚 Tổng số Đơn vị Học tập (ĐVHT) toàn Khóa học: ${totalCredits || 'N/A'}`;
+    document.getElementById("avg10").innerText = `📘 Trung bình Điểm gốc toàn Khóa học: ${avg10.toFixed(2)}`;
+    document.getElementById("avg4").innerText = `📗 Điểm Trung bình Tích lũy toàn Khóa học: ${avg4.toFixed(2)}`;
+    document.getElementById("rank").innerText = `🏆 Xếp loại học lực đối với sinh viên năm cuối: ${rank}`;
+
+    document.getElementById("fast-input-page").classList.add("hidden");
+    document.getElementById("result-page").classList.remove("hidden");
+}
+
+// Hàm để xóa dữ liệu trên trang xếp loại nhanh
+function fastClear() {
+    document.getElementById("fastTotalCredits").value = "";
+    document.getElementById("fastAvg10").value = "";
+    document.getElementById("fastAvg4").value = "";
+    document.getElementById("result-page").classList.add("hidden");
+}
+
+// Hàm để xóa tất cả các hàng mà không cần xác nhận
+function clearAllRowsWithoutConfirm() {
+    const tbody = document.getElementById("subjects");
+    while (tbody.firstChild) {
+        tbody.removeChild(tbody.firstChild);
+    }
+    addRow();
+
+    const fileInput = document.getElementById("fileInput");
+    if (fileInput) {
+        fileInput.value = "";
+    }
+}
