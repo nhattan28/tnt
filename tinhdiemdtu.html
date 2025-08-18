@@ -16,6 +16,11 @@
     </header>
 
     <main class="container">
+      <div class="switch-buttons">
+        <button class="btn" onclick="showInputPage()">Nhập Điểm Các Học Phần</button>
+        <button class="btn" onclick="showFastInputPage()">Xếp Loại Nhanh</button>
+      </div>
+
       <section id="input-page">
         <h2>Nhập Điểm Các Học Phần</h2>
         <div class="table-container">
@@ -31,8 +36,8 @@
             <tbody id="subjects">
               <tr>
                 <td><input type="text" placeholder="Mã lớp học" /></td>
-                <td><input type="number" min="1" value="" placeholder="Số tín chỉ" /></td>
-                <td><input type="number" step="0.1" min="0" max="10" placeholder="Thang điểm 10"/></td>
+                <td><input type="number" id="fastAvg10" step="0.01" placeholder="Điểm 10">
+                <td><input type="number" id="fastAvg4" step="0.01" placeholder="Điểm 4">
                 <td>
                   <button class="btn delete-btn" onclick="deleteRow(this)">
                     Xóa
@@ -54,13 +59,38 @@
           <button class="btn calculate-btn" onclick="calculate()">
             Xem Kết Quả
           </button>
-          <!-- Thêm nút để truy cập trang hướng dẫn -->
           <a href="huongdan.html" class="btn instruction-btn">
             Hướng Dẫn Upload Files
           </a>
         </div>
       </section>
 
+      <section id="fast-input-page" class="hidden">
+        <h2>Nhập Dữ Liệu Để Xếp Loại Nhanh</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Tổng số Đơn vị Học tập (ĐVHT) toàn Khóa học</th>
+                <th>Trung bình Điểm gốc toàn Khóa học</th>
+                <th>Điểm Trung bình Tích lũy toàn Khóa học</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="number" id="fastTotalCredits" placeholder="Số tín chỉ"></td>
+                <td><input type="number" id="fastAvg10" step="0.01" min="0.01" max="10" placeholder="Điểm 10">
+                <td><input type="number" id="fastAvg4" step="0.01" min="0.01" max="4" placeholder="Điểm 4">
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="button-group">
+          <button class="btn calculate-btn" onclick="fastCalculate()">Xem Kết Quả</button>
+          <button class="btn clear-btn" onclick="fastClear()">Xóa</button>
+        </div>
+      </section>
+      
       <section id="result-page" class="hidden">
         <div class="result-card">
           <h2>KẾT QUẢ</h2>
@@ -70,14 +100,10 @@
             <h3 id="avg4"></h3>
             <h3 id="rank"></h3>
           </div>
-          <button class="btn back-btn" onclick="goBack()">
-            ⬅️ Quay lại nhập điểm
-          </button>
         </div>
       </section>
     </main>
     
-    <!-- Custom Modal HTML -->
     <div id="custom-modal" class="modal">
       <div class="modal-content">
         <p id="modal-message"></p>
