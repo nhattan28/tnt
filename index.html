@@ -159,15 +159,15 @@
         height: 100%;
         border: none;
       }
-      #search-input {
-      width: 80%; /* Tăng chiều rộng lên 90% của container */
-      padding: 8px; /* Tăng khoảng đệm bên trong */
-      margin: 1px auto; /* Tăng khoảng cách so với các mục khác và căn giữa */
-      display: block; /* Đảm bảo ô input chiếm một dòng riêng */
-      box-sizing: border-box; /* Đảm bảo padding không làm tăng tổng chiều rộng */
-      font-size: 16px; /* Tăng kích thước phông chữ */
-      border-radius: 10px; /* Bo góc mềm mại hơn */
-      border: 1px solid #83ef79; /* Thêm đường viền */
+    #search-input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px auto;
+      display: block;
+      box-sizing: border-box;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
     </style>
   </head>
@@ -182,8 +182,9 @@
 
     <div class="layout">
       <div class="sidebar" id="sidebar">
-        <button onclick="loadPage(event, 'website2.html')">🏠 Trang chủ</button>
+        
         <input type="text" id="search-input" placeholder="Tìm kiếm..." oninput="filterMenu()">
+        <button onclick="loadPage(event, 'website2.html')">🏠 Trang chủ</button>
         <button onclick="loadPage(event, 'lienhe.html')">📞 Liên hệ</button>
 
          <details>
@@ -271,10 +272,9 @@
         const filter = input.value.toLowerCase();
         const sidebar = document.getElementById('sidebar');
         const detailsElements = sidebar.getElementsByTagName('details');
+        const allButtons = sidebar.querySelectorAll('button');
 
-        // Nếu không có nội dung tìm kiếm, hiển thị lại tất cả button và đóng các details
         if (filter === "") {
-          const allButtons = sidebar.querySelectorAll('button');
           for (let i = 0; i < allButtons.length; i++) {
               allButtons[i].style.display = 'block';
           }
@@ -285,20 +285,16 @@
           return;
         }
 
-        // Ẩn tất cả các button
-        const allButtons = sidebar.querySelectorAll('button');
         for (let i = 0; i < allButtons.length; i++) {
           allButtons[i].style.display = 'none';
         }
 
-        // Xử lý tìm kiếm
         for (let i = 0; i < detailsElements.length; i++) {
           const details = detailsElements[i];
           const summary = details.querySelector('summary');
           const summaryText = summary.textContent.toLowerCase();
           let hasMatch = false;
 
-          // Kiểm tra xem thẻ cha có khớp không
           if (summaryText.includes(filter)) {
             details.style.display = 'block';
             details.open = true;
@@ -308,7 +304,6 @@
                 childButtons[j].style.display = 'block';
             }
           } else {
-            // Kiểm tra các thẻ con
             const childButtons = details.querySelectorAll('button');
             for (let j = 0; j < childButtons.length; j++) {
               const button = childButtons[j];
@@ -329,24 +324,30 @@
         }
       }
 
-      // Xử lý khi focus vào ô tìm kiếm
-      document.getElementById('search-input').addEventListener('focus', function() {
+      function hideSidebar() {
         const sidebar = document.getElementById('sidebar');
-        const allButtons = sidebar.querySelectorAll('button');
-        const detailsElements = sidebar.querySelectorAll('details');
-
-        // Ẩn tất cả các button và đóng details
-        for (let i = 0; i < allButtons.length; i++) {
-          allButtons[i].style.display = 'none';
-        }
-        for (let i = 0; i < detailsElements.length; i++) {
-          detailsElements[i].open = false;
-          detailsElements[i].style.display = 'block'; // Đảm bảo các details vẫn hiển thị
-        }
-
-        // Bắt đầu tìm kiếm với giá trị hiện tại
+        const overlay = document.getElementById('overlay');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const searchInput = document.getElementById('search-input');
+        
+        sidebar.classList.remove('show');
+        overlay.classList.remove('show');
+        toggleBtn.classList.remove('hide');
+        
+        // Xóa nội dung tìm kiếm và reset menu
+        searchInput.value = '';
         filterMenu();
-      });
+      }
+
+      // Ghi đè hàm loadPage để thêm chức năng xóa nội dung tìm kiếm
+      const originalLoadPage = window.loadPage;
+      window.loadPage = function(event, url) {
+        if (typeof originalLoadPage === 'function') {
+            originalLoadPage(event, url);
+        }
+        document.getElementById('search-input').value = '';
+        filterMenu();
+      };
     </script>
   </body>
 </html>
