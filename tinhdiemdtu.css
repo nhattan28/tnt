@@ -37,7 +37,7 @@ h2 {
 }
 
 .table-container {
-  max-height: 420px;
+  max-height: 370px;
   overflow-y: auto;
   overflow-x: auto;
   margin-bottom: 1.5rem;
@@ -263,4 +263,26 @@ input[type="text"] {
     padding: 0.4rem 0.8rem;
     font-size: 0.75rem;
   }
+}
+
+#fast-input-page {
+  padding: 20px;
+}
+
+#fast-input-page h2 {
+  margin-bottom: 20px;
+}
+
+#fast-input-page .table-container {
+  max-width: 800px;
+  margin: 0 auto 20px;
+}
+
+#fast-input-page input {
+  width: 100%;
+}
+
+.fast-result {
+  margin-top: 15px;
+  font-weight: bold;
 }
