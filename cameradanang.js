@@ -2,7 +2,6 @@
         { id: 'xCNRP131kNY', name: '📍 Cổng Trường Nguyễn Huệ' },
         { id: 'muijHPW82vI', name: '📍 Cổng Sau Bệnh viện C' },
         { id: 'CaMkzNXwVcE', name: '📍 PTZ Trang Phục Phương Trần' },
-        { id: 'CGU-p870q7o', name: '📍 Trường Tiểu Học Lý Tự Trọng - PTZ' },
         { id: 'AcndFyZebdc', name: '📍 View Công Trình BV Đà Nẵng' },
         { id: 'VHxNpNjKurU', name: '📍 Nút giao Tây Cầu Rồng' }
       ];
@@ -67,3 +66,4 @@
           grid.appendChild(videoEl);
         });
       };
+
